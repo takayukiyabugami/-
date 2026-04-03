@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Chess Piece Walker</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene" aria-label="3D chessboard"></canvas>
+    <aside class="hud">
+      <h1>3D Chess Piece Walker</h1>
+      <p id="status">Click the pawn to select it.</p>
+      <ul>
+        <li>Left click pawn: select/deselect</li>
+        <li>Left click board: queue destination</li>
+        <li>Drag mouse: orbit camera</li>
+      </ul>
+    </aside>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

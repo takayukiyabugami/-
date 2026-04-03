@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Cockpit robot queen in shonen line style">
+  <defs>
+    <style>
+      .out { stroke:#111; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+      .ink { stroke:#111; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .speed { stroke:#111; stroke-width:1.4; opacity:0.32; stroke-linecap:round; }
+    </style>
+    <linearGradient id="qr_armor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c2d1e2"/>
+      <stop offset="1" stop-color="#5d728b"/>
+    </linearGradient>
+    <linearGradient id="qr_glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dcf6ff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#84c8ea" stop-opacity="0.72"/>
+    </linearGradient>
+  </defs>
+
+  <line x1="10" y1="82" x2="28" y2="78" class="speed"/>
+  <line x1="10" y1="94" x2="30" y2="92" class="speed"/>
+  <line x1="98" y1="52" x2="118" y2="46" class="speed"/>
+
+  <circle cx="42" cy="98" r="12" fill="#2f3b49" class="out"/>
+  <circle cx="86" cy="98" r="12" fill="#2f3b49" class="out"/>
+  <circle cx="42" cy="98" r="4.5" fill="#b4cbe3" class="out"/>
+  <circle cx="86" cy="98" r="4.5" fill="#b4cbe3" class="out"/>
+
+  <path d="M30 70 H98 V92 H30 Z" fill="url(#qr_armor)" class="out"/>
+  <path d="M42 60 H86 V72 H42 Z" fill="#7389a3" class="out"/>
+  <path d="M20 60 H36 V68 H20 Z M92 60 H108 V68 H92 Z" fill="#7488a1" class="out"/>
+  <path d="M16 66 H24 V84 H16 Z M104 66 H112 V84 H104 Z" fill="#8ba0b9" class="out"/>
+  <path d="M40 82 H88 M46 73 H82 M34 74 H94" class="ink"/>
+  <circle cx="46" cy="81" r="2.4" fill="#7cf6ff"/>
+  <circle cx="58" cy="81" r="2.4" fill="#7cf6ff"/>
+  <circle cx="70" cy="81" r="2.4" fill="#7cf6ff"/>
+  <circle cx="82" cy="81" r="2.4" fill="#7cf6ff"/>
+
+  <path d="M42 62 C42 44 50 32 64 32 C78 32 86 44 86 62 Z" fill="#4d6078" class="out"/>
+  <path d="M46 60 C46 47 52 38 64 38 C76 38 82 47 82 60 Z" fill="url(#qr_glass)" class="out"/>
+  <circle cx="64" cy="46" r="7.5" fill="#f1ceaa" class="out"/>
+  <path d="M57 49 Q64 52 71 49 M54 40 Q64 31 74 40" class="ink"/>
+  <path d="M54 39 L58 32 L62 38 L64 30 L66 38 L70 32 L74 39 Z" fill="#e4bf58" class="out"/>
+  <rect x="56" y="39" width="16" height="4" rx="2" fill="#e4bf58" class="out"/>
+  <path d="M50 58 Q64 53 78 58 M52 61 Q64 59 76 61" class="ink"/>
+
+  <ellipse cx="64" cy="113" rx="38" ry="8" fill="#4f7f2f" opacity="0.44"/>
+</svg>

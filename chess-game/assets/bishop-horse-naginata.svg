@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Horse naginata bishop in shonen line style">
+  <defs>
+    <style>
+      .out { stroke:#111; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+      .ink { stroke:#111; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .speed { stroke:#111; stroke-width:1.4; opacity:0.32; stroke-linecap:round; }
+    </style>
+    <linearGradient id="bh_horse" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a37745"/>
+      <stop offset="1" stop-color="#614022"/>
+    </linearGradient>
+    <linearGradient id="bh_robe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a46a5"/>
+      <stop offset="1" stop-color="#462556"/>
+    </linearGradient>
+    <linearGradient id="bh_blade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f8fcff"/>
+      <stop offset="1" stop-color="#a2afbc"/>
+    </linearGradient>
+  </defs>
+
+  <line x1="12" y1="74" x2="28" y2="66" class="speed"/>
+  <line x1="100" y1="92" x2="118" y2="88" class="speed"/>
+  <line x1="102" y1="102" x2="118" y2="100" class="speed"/>
+
+  <path d="M22 86 C27 65 39 57 59 57 C79 57 91 66 95 86 L86 98 H32 Z" fill="url(#bh_horse)" class="out"/>
+  <rect x="35" y="93" width="8" height="19" rx="3" fill="#55331a" class="out"/>
+  <rect x="73" y="93" width="8" height="19" rx="3" fill="#55331a" class="out"/>
+  <path d="M88 67 C100 67 107 60 109 52 C111 44 106 37 96 37 H84 V67 Z" fill="url(#bh_horse)" class="out"/>
+  <circle cx="97" cy="46" r="2.5" fill="#111"/>
+  <path d="M94 55 Q99 58 103 64 M86 49 Q79 47 73 49" class="ink"/>
+
+  <path d="M44 89 C46 71 50 59 60 59 C70 59 74 71 76 89 Z" fill="url(#bh_robe)" class="out"/>
+  <ellipse cx="60" cy="34" rx="10" ry="11" fill="#f2cfab" class="out"/>
+  <path d="M60 16 L70 30 L60 44 L50 30 Z" fill="#ddb95c" class="out"/>
+  <path d="M60 23 V38 M54 30 H66" class="ink"/>
+
+  <rect x="73" y="10" width="4" height="82" fill="#7a5a3a" class="out"/>
+  <path d="M77 10 L114 17 L77 24 Z" fill="url(#bh_blade)" class="out"/>
+
+  <path d="M30 89 H84 M46 74 L58 83 M62 73 L72 83 M44 66 L54 75" class="ink"/>
+  <ellipse cx="64" cy="113" rx="40" ry="8" fill="#4f7f2f" opacity="0.44"/>
+</svg>

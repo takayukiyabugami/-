@@ -1,0 +1,817 @@
+:root {
+  --light-square: #8ecf66;
+  --dark-square: #5ca13f;
+  --panel-bg: rgba(249, 255, 245, 0.9);
+  --text: #151515;
+  --accent: #2a6a2f;
+  --selected: #ffe581;
+  --legal: #e8fff0;
+  --danger: #cc3e3e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 8%, #f7fbff, #dff2ff 38%, #c8e8ff 63%, #b8dbf3 100%);
+}
+
+.layout {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(300px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid #b9d9ac;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(56, 96, 28, 0.15);
+}
+
+h1,
+h2 {
+  margin: 0 0 12px;
+}
+
+h1 {
+  font-size: 1.6rem;
+}
+
+h2 {
+  margin-top: 18px;
+  font-size: 1.1rem;
+}
+
+.status {
+  margin: 0 0 12px;
+  min-height: 40px;
+  line-height: 1.4;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #ffffff;
+  background: linear-gradient(180deg, #3d8b46, var(--accent));
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+.moves {
+  margin: 0;
+  padding-left: 20px;
+  max-height: 460px;
+  overflow: auto;
+}
+
+.moves li {
+  padding: 2px 0;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.board-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  width: min(88vmin, 720px);
+  aspect-ratio: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  border: 12px solid #6a4c2f;
+  border-radius: 8px;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 2px #987147;
+}
+
+.square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  cursor: pointer;
+}
+
+.square.light {
+  background:
+    radial-gradient(circle at 24% 26%, rgba(255, 245, 203, 0.45) 0 5%, transparent 5.4%),
+    radial-gradient(circle at 75% 65%, rgba(235, 255, 234, 0.32) 0 6%, transparent 6.6%),
+    linear-gradient(145deg, #9bdd70, var(--light-square) 55%, #76bc54);
+}
+
+.square.dark {
+  background:
+    repeating-linear-gradient(
+      65deg,
+      rgba(0, 0, 0, 0.08),
+      rgba(0, 0, 0, 0.08) 2px,
+      transparent 2px,
+      transparent 7px
+    ),
+    linear-gradient(145deg, #6cb847, var(--dark-square) 58%, #3f7f2b);
+}
+
+.square.selected {
+  box-shadow: inset 0 0 0 4px var(--selected), inset 0 0 14px rgba(255, 255, 255, 0.4);
+}
+
+.square.legal::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 28%;
+  height: 28%;
+  border-radius: 999px;
+  background: rgba(232, 255, 240, 0.66);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.square.capture::after {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  border: 4px solid rgba(255, 244, 189, 0.85);
+  background: transparent;
+  z-index: 3;
+}
+
+.square.in-check {
+  box-shadow: inset 0 0 0 4px var(--danger);
+}
+
+.square.attacking,
+.square.under-attack {
+  z-index: 8;
+}
+
+.square.under-attack {
+  animation: targetShake 0.34s linear;
+}
+
+.square.under-attack-king {
+  animation: kingSquash 0.76s ease-in-out;
+}
+
+.capture-fx {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.capture-fx.origin.piece-pawn {
+  width: 11px;
+  height: 92%;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #f7fbff 0, #111317 34%, #1f242b 100%);
+  box-shadow: 0 0 10px rgba(10, 10, 12, 0.42);
+  transform: translate(-50%, 22%) rotate(calc(var(--attack-angle) + 138deg)) scaleY(0.12);
+  animation: pawnSwordRise 0.72s cubic-bezier(0.18, 0.82, 0.26, 1) forwards;
+}
+
+.capture-fx.target.piece-pawn {
+  width: 148%;
+  height: 148%;
+  border-radius: 999px;
+  border-left: 9px solid rgba(244, 251, 255, 0.94);
+  border-top: 9px solid rgba(194, 211, 226, 0.56);
+  filter: drop-shadow(0 0 10px rgba(240, 247, 255, 0.8));
+  transform: translate(-50%, 18%) rotate(calc(var(--attack-angle) + 142deg)) scale(0.22);
+  animation: pawnUpperSlash 0.72s ease-out forwards;
+}
+
+.capture-fx.origin.piece-rook {
+  width: 76%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6f4a2b 0 65%, #cad6df 100%);
+  transform: translate(-50%, -50%) rotate(var(--attack-angle)) scaleX(0.18);
+  animation: rookPrep 0.7s ease-out forwards;
+}
+
+.capture-fx.target.piece-rook {
+  width: 118%;
+  height: 10px;
+  background: linear-gradient(90deg, #6f4a2b 0 70%, #f0f7ff 70% 100%);
+  clip-path: polygon(0 30%, 76% 30%, 84% 0, 100% 50%, 84% 100%, 76% 70%, 0 70%);
+  box-shadow: 0 0 8px rgba(240, 247, 255, 0.8);
+  transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateX(-125%);
+  animation: rookSpear 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.capture-fx.origin.piece-knight {
+  width: 24%;
+  height: 24%;
+  border: 3px solid rgba(250, 250, 250, 0.7);
+  border-radius: 999px;
+  transform: translate(-50%, -50%) scale(0.4);
+  animation: knightLeap 0.76s ease-out forwards;
+}
+
+.capture-fx.target.piece-knight {
+  width: 10px;
+  height: 130%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f7fbff 0, #afbcc8 100%);
+  box-shadow: 0 0 8px rgba(241, 248, 255, 0.8);
+  transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateY(-140%);
+  animation: knightDrop 0.76s ease-in forwards;
+}
+
+.capture-fx.origin.piece-bishop {
+  width: 8px;
+  height: 86%;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #8d6a47, #5f452d);
+  transform: translate(-50%, -50%) rotate(var(--attack-angle)) scaleY(0.28);
+  animation: bishopLift 0.72s ease-out forwards;
+}
+
+.capture-fx.target.piece-bishop {
+  width: 120%;
+  height: 120%;
+  border-radius: 999px;
+  border-top: 7px solid rgba(245, 252, 255, 0.92);
+  border-right: 7px solid rgba(245, 252, 255, 0.46);
+  transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) - 130deg)) scale(0.35);
+  animation: bishopSwing 0.72s ease-out forwards;
+}
+
+.capture-fx.origin.piece-queen {
+  width: 24%;
+  height: 24%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(150, 255, 255, 0.95) 0, rgba(63, 184, 255, 0.55) 62%, rgba(63, 184, 255, 0) 100%);
+  box-shadow: 0 0 14px rgba(102, 238, 255, 0.85);
+  transform: translate(-50%, -50%) scale(0.35);
+  animation: queenCharge 0.78s ease-out forwards;
+}
+
+.capture-fx.target.piece-queen {
+  width: 130%;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(156, 254, 255, 0) 0, #b2fbff 26%, #6cd9ff 50%, #b2fbff 74%, rgba(156, 254, 255, 0) 100%);
+  box-shadow: 0 0 16px rgba(92, 229, 255, 0.95);
+  transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) - 28deg)) scaleX(0.12);
+  animation: queenBeam 0.78s ease-out forwards;
+}
+
+.capture-fx.origin.piece-king {
+  width: 86%;
+  height: 86%;
+  border-radius: 999px;
+  background: radial-gradient(circle, #f1c89e 0 45%, #d4a676 46% 100%);
+  transform: translate(-50%, -50%) scale(0.65);
+  animation: kingLean 0.76s ease-in-out forwards;
+}
+
+.capture-fx.target.piece-king {
+  width: 98%;
+  height: 98%;
+  border-radius: 999px;
+  background: radial-gradient(circle at 38% 38%, #f4d1ad 0 48%, #d5a678 49% 100%);
+  transform: translate(-50%, -50%) scale(0.18);
+  animation: kingCrush 0.76s ease-in-out forwards;
+}
+
+.piece-icon.moving-source-hidden {
+  opacity: 0;
+}
+
+.move-ghost {
+  --move-x: 0px;
+  --move-y: 0px;
+  --move-duration: 340ms;
+  --run-angle: 0deg;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 26;
+}
+
+.move-ghost.moving {
+  animation: pieceGlide var(--move-duration) linear forwards;
+}
+
+.move-ghost .piece-icon {
+  width: 100%;
+  height: 100%;
+  animation: runBob 0.14s ease-in-out infinite alternate;
+}
+
+.move-ghost.running::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 76%;
+  width: 145%;
+  height: 28%;
+  transform: translate(-50%, -50%) rotate(var(--run-angle));
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.65) 0 6%,
+      rgba(255, 255, 255, 0) 6% 16%
+    );
+  opacity: 0.6;
+  filter: blur(0.6px);
+  animation: speedStreak 0.16s linear infinite;
+}
+
+.move-ghost.running::after {
+  content: "";
+  position: absolute;
+  left: 30%;
+  top: 82%;
+  width: 74%;
+  height: 22%;
+  transform: translate(-50%, -50%) rotate(var(--run-angle));
+  background: radial-gradient(ellipse at center, rgba(88, 68, 42, 0.54) 0 48%, rgba(88, 68, 42, 0) 100%);
+  animation: runDust 0.28s ease-out infinite;
+}
+
+.move-ghost.piece-pawn .piece-icon {
+  animation: pawnWalkBody 0.64s linear infinite;
+  transform-origin: 50% 72%;
+}
+
+.move-ghost.piece-pawn.walking::before,
+.move-ghost.piece-pawn.walking::after {
+  content: "";
+  position: absolute;
+  width: 16%;
+  height: 36%;
+  bottom: 9%;
+  border-radius: 45% 45% 20% 20%;
+  background: linear-gradient(180deg, rgba(36, 41, 49, 0.92), rgba(17, 20, 25, 0.92));
+  opacity: 0.74;
+  z-index: 1;
+  transform-origin: 50% 8%;
+}
+
+.move-ghost.piece-pawn.walking::before {
+  left: 44%;
+  animation: pawnLegLeft 0.64s linear infinite;
+}
+
+.move-ghost.piece-pawn.walking::after {
+  left: 58%;
+  animation: pawnLegRight 0.64s linear infinite;
+}
+
+.piece-icon {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.28));
+}
+
+.piece-icon.piece-pawn {
+  width: 90%;
+  height: 98%;
+  object-fit: contain;
+  object-position: 50% 100%;
+  border-radius: 0;
+}
+
+.piece-icon.team-black {
+  filter:
+    brightness(0.85)
+    saturate(0.82)
+    hue-rotate(170deg)
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.34));
+}
+
+.piece-icon.team-white {
+  filter:
+    saturate(1.12)
+    brightness(1.05)
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.28));
+}
+
+.piece-icon.piece-pawn.team-white {
+  filter:
+    grayscale(1)
+    contrast(1.18)
+    brightness(1.04)
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.3));
+}
+
+.piece-icon.piece-pawn.team-black {
+  filter:
+    grayscale(1)
+    contrast(1.26)
+    brightness(0.64)
+    drop-shadow(0 3px 2px rgba(0, 0, 0, 0.42));
+}
+
+.coord {
+  position: absolute;
+  font-size: 0.7rem;
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 4;
+  font-weight: 600;
+}
+
+.square.light .coord {
+  color: #255226;
+}
+
+.square.dark .coord {
+  color: #eefde5;
+}
+
+@keyframes pieceGlide {
+  from {
+    transform: translate(-50%, -50%) translate(0, 0);
+  }
+  to {
+    transform: translate(-50%, -50%) translate(var(--move-x), var(--move-y));
+  }
+}
+
+@keyframes runBob {
+  from {
+    transform: translateY(1px);
+  }
+  to {
+    transform: translateY(-1.5px);
+  }
+}
+
+@keyframes speedStreak {
+  0% {
+    opacity: 0.22;
+    transform: translate(-58%, -50%) rotate(var(--run-angle)) scaleX(0.8);
+  }
+  50% {
+    opacity: 0.64;
+  }
+  100% {
+    opacity: 0.15;
+    transform: translate(-42%, -50%) rotate(var(--run-angle)) scaleX(1.26);
+  }
+}
+
+@keyframes runDust {
+  0% {
+    opacity: 0.7;
+    transform: translate(-56%, -50%) rotate(var(--run-angle)) scale(0.64);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-28%, -50%) rotate(var(--run-angle)) scale(1.3);
+  }
+}
+
+@keyframes pawnWalkBody {
+  0% {
+    transform: translateY(1.2px) rotate(-0.45deg);
+  }
+  25% {
+    transform: translateY(-0.9px) rotate(0.2deg);
+  }
+  50% {
+    transform: translateY(1.2px) rotate(0.45deg);
+  }
+  75% {
+    transform: translateY(-0.9px) rotate(-0.2deg);
+  }
+  100% {
+    transform: translateY(1.2px) rotate(-0.45deg);
+  }
+}
+
+@keyframes pawnLegLeft {
+  0% {
+    transform: translate(-50%, 0) rotate(-10deg);
+  }
+  50% {
+    transform: translate(-50%, -1.5%) rotate(12deg);
+  }
+  100% {
+    transform: translate(-50%, 0) rotate(-10deg);
+  }
+}
+
+@keyframes pawnLegRight {
+  0% {
+    transform: translate(-50%, -1.5%) rotate(12deg);
+  }
+  50% {
+    transform: translate(-50%, 0) rotate(-10deg);
+  }
+  100% {
+    transform: translate(-50%, -1.5%) rotate(12deg);
+  }
+}
+
+@keyframes targetShake {
+  0% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(2px, -1px);
+  }
+  55% {
+    transform: translate(-2px, 1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes kingSquash {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.06, 0.82);
+  }
+  60% {
+    transform: scale(0.92, 1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pawnSwordRise {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 26%) rotate(calc(var(--attack-angle) + 152deg)) scaleY(0.1);
+  }
+  30% {
+    opacity: 0.96;
+    transform: translate(-50%, 20%) rotate(calc(var(--attack-angle) + 126deg)) scaleY(0.66);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -20%) rotate(calc(var(--attack-angle) - 24deg)) scaleY(1.08);
+  }
+}
+
+@keyframes pawnUpperSlash {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 22%) rotate(calc(var(--attack-angle) + 148deg)) scale(0.16);
+  }
+  28% {
+    opacity: 1;
+  }
+  64% {
+    opacity: 1;
+    transform: translate(-50%, -26%) rotate(calc(var(--attack-angle) - 4deg)) scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -38%) rotate(calc(var(--attack-angle) - 38deg)) scale(1.08);
+  }
+}
+
+@keyframes rookPrep {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) scaleX(0.2);
+  }
+  45% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) scaleX(1);
+  }
+}
+
+@keyframes rookSpear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateX(-125%);
+  }
+  28% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateX(4%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateX(22%);
+  }
+}
+
+@keyframes knightLeap {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.35);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -108%) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -220%) scale(0.3);
+  }
+}
+
+@keyframes knightDrop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateY(-145%);
+  }
+  24% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateY(-4%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) translateY(16%);
+  }
+}
+
+@keyframes bishopLift {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--attack-angle)) scaleY(0.2);
+  }
+  34% {
+    opacity: 0.95;
+    transform: translate(-50%, -88%) rotate(var(--attack-angle)) scaleY(0.95);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -40%) rotate(var(--attack-angle)) scaleY(0.5);
+  }
+}
+
+@keyframes bishopSwing {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) - 130deg)) scale(0.28);
+  }
+  26% {
+    opacity: 1;
+  }
+  76% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) + 52deg)) scale(1.02);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) + 74deg)) scale(1.06);
+  }
+}
+
+@keyframes queenCharge {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+}
+
+@keyframes queenBeam {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) - 28deg)) scaleX(0.08);
+  }
+  20% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) + 24deg)) scaleX(1.06);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(calc(var(--attack-angle) + 42deg)) scaleX(1.1);
+  }
+}
+
+@keyframes kingLean {
+  0% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0.62);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-20%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-8%, -50%) scale(1.05);
+  }
+}
+
+@keyframes kingCrush {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.18);
+  }
+  34% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+  72% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .move-ghost,
+  .move-ghost .piece-icon,
+  .move-ghost.running::before,
+  .move-ghost.running::after,
+  .move-ghost.piece-pawn.walking::before,
+  .move-ghost.piece-pawn.walking::after,
+  .square.under-attack,
+  .square.under-attack-king,
+  .capture-fx {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+.coord.rank {
+  top: 4px;
+  left: 4px;
+}
+
+.coord.file {
+  right: 4px;
+  bottom: 3px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 14px;
+  }
+
+  .panel {
+    order: 2;
+  }
+
+  .board-wrap {
+    order: 1;
+  }
+
+  .moves {
+    max-height: 220px;
+  }
+}

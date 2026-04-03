@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Ninja knight in shonen line style">
+  <defs>
+    <style>
+      .out { stroke:#111; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+      .ink { stroke:#111; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .speed { stroke:#111; stroke-width:1.4; opacity:0.34; stroke-linecap:round; }
+    </style>
+    <linearGradient id="kn_cloth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#474d5a"/>
+      <stop offset="1" stop-color="#1a1d25"/>
+    </linearGradient>
+    <linearGradient id="kn_blade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5fbff"/>
+      <stop offset="1" stop-color="#a4b1be"/>
+    </linearGradient>
+  </defs>
+
+  <line x1="14" y1="36" x2="30" y2="29" class="speed"/>
+  <line x1="10" y1="48" x2="28" y2="42" class="speed"/>
+  <line x1="96" y1="22" x2="118" y2="14" class="speed"/>
+  <line x1="98" y1="34" x2="120" y2="26" class="speed"/>
+
+  <path d="M36 98 C36 76 44 60 62 60 C80 60 88 76 88 98 Z" fill="url(#kn_cloth)" class="out"/>
+  <path d="M46 61 C46 48 54 40 64 40 C74 40 82 48 82 61 Z" fill="url(#kn_cloth)" class="out"/>
+  <path d="M44 54 Q56 42 72 43 Q82 44 90 52" class="ink"/>
+  <path d="M44 58 Q54 56 64 56 Q74 56 84 58" class="ink"/>
+
+  <ellipse cx="64" cy="48" rx="16" ry="11" fill="#20252f" class="out"/>
+  <rect x="50" y="44" width="28" height="8" rx="4" fill="#dde7ef" class="out"/>
+  <circle cx="58" cy="48" r="2" fill="#111"/>
+  <circle cx="70" cy="48" r="2" fill="#111"/>
+  <path d="M50 40 Q64 30 78 40" class="ink"/>
+
+  <rect x="84" y="28" width="5" height="50" transform="rotate(35 84 28)" fill="url(#kn_blade)" class="out"/>
+  <rect x="63" y="64" width="4" height="40" transform="rotate(-55 63 64)" fill="#6f4928" class="out"/>
+  <rect x="56" y="72" width="12" height="4" rx="2" fill="#6f4928" class="out"/>
+  <path d="M84 57 L93 48 M81 63 L91 53" class="ink"/>
+
+  <ellipse cx="64" cy="113" rx="34" ry="8" fill="#4f7f2f" opacity="0.44"/>
+</svg>

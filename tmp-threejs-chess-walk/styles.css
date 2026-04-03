@@ -1,0 +1,74 @@
+:root {
+  --panel-bg: rgba(12, 18, 26, 0.86);
+  --panel-border: rgba(188, 210, 236, 0.32);
+  --text: #edf4ff;
+  --accent: #8bc6ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at 20% 12%, #e8f0ff 0%, #d6e3f7 38%, #b8cde9 100%);
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+}
+
+#scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hud {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: min(340px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  line-height: 1.45;
+}
+
+.hud h1 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+}
+
+.hud p {
+  margin: 0 0 8px;
+  min-height: 2.9em;
+  font-size: 0.95rem;
+}
+
+.hud ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.87rem;
+  opacity: 0.9;
+}
+
+@media (max-width: 720px) {
+  .hud {
+    left: 10px;
+    top: 10px;
+    width: calc(100vw - 20px);
+  }
+}

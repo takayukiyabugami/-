@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Carriage rook in shonen line style">
+  <defs>
+    <style>
+      .out { stroke:#111; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+      .ink { stroke:#111; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .speed { stroke:#111; stroke-width:1.4; opacity:0.32; stroke-linecap:round; }
+    </style>
+    <linearGradient id="rc_body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d09f58"/>
+      <stop offset="1" stop-color="#7a5224"/>
+    </linearGradient>
+    <linearGradient id="rc_tower" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eff7ff"/>
+      <stop offset="1" stop-color="#97a6b5"/>
+    </linearGradient>
+  </defs>
+
+  <line x1="8" y1="84" x2="26" y2="82" class="speed"/>
+  <line x1="8" y1="94" x2="28" y2="92" class="speed"/>
+  <line x1="100" y1="76" x2="120" y2="68" class="speed"/>
+
+  <circle cx="34" cy="94" r="14" fill="#3a2715" class="out"/>
+  <circle cx="34" cy="94" r="6" fill="#d5b07a" class="out"/>
+  <circle cx="88" cy="94" r="16" fill="#3a2715" class="out"/>
+  <circle cx="88" cy="94" r="7" fill="#d5b07a" class="out"/>
+  <path d="M22 67 H103 V84 H22 Z" fill="url(#rc_body)" class="out"/>
+  <path d="M34 52 H83 V67 H34 Z" fill="#aa773a" class="out"/>
+  <path d="M46 24 H74 V52 H46 Z" fill="url(#rc_tower)" class="out"/>
+  <path d="M44 16 H52 V24 H44 Z M56 16 H64 V24 H56 Z M68 16 H76 V24 H68 Z" fill="#b3c0cc" class="out"/>
+
+  <path d="M102 70 C112 70 118 63 119 56 C120 46 114 40 104 40 H97 V70 Z" fill="#5a3a1c" class="out"/>
+  <circle cx="109" cy="49" r="2.5" fill="#111"/>
+  <path d="M106 56 Q112 60 116 65 M98 48 Q92 45 85 48" class="ink"/>
+
+  <path d="M31 84 H97 M41 67 H76 M50 30 H70 M30 88 L44 70 M50 88 L62 70 M70 88 L82 70" class="ink"/>
+  <ellipse cx="64" cy="113" rx="40" ry="8" fill="#4f7f2f" opacity="0.44"/>
+</svg>

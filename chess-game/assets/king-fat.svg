@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Plump king in shonen line style">
+  <defs>
+    <style>
+      .out { stroke:#111; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+      .ink { stroke:#111; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; fill:none; }
+      .speed { stroke:#111; stroke-width:1.4; opacity:0.32; stroke-linecap:round; }
+    </style>
+    <linearGradient id="kg_robe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d14848"/>
+      <stop offset="1" stop-color="#7f1e1e"/>
+    </linearGradient>
+  </defs>
+
+  <line x1="8" y1="88" x2="28" y2="84" class="speed"/>
+  <line x1="10" y1="98" x2="30" y2="94" class="speed"/>
+  <line x1="98" y1="96" x2="118" y2="90" class="speed"/>
+
+  <ellipse cx="64" cy="84" rx="34" ry="30" fill="url(#kg_robe)" class="out"/>
+  <ellipse cx="64" cy="88" rx="22" ry="16" fill="#e9ba8e" class="out"/>
+  <circle cx="64" cy="44" r="16" fill="#f2d2b3" class="out"/>
+
+  <path d="M49 34 C53 27 58 24 64 24 C70 24 75 27 79 34" class="ink"/>
+  <path d="M56 48 C59 52 69 52 72 48" class="ink"/>
+  <circle cx="58" cy="42" r="2.2" fill="#111"/>
+  <circle cx="70" cy="42" r="2.2" fill="#111"/>
+  <path d="M50 36 Q64 28 78 36" class="ink"/>
+
+  <path d="M46 30 L52 16 L60 28 L64 14 L68 28 L76 16 L82 30 Z" fill="#e4bf58" class="out"/>
+  <rect x="48" y="30" width="32" height="7" rx="3" fill="#e4bf58" class="out"/>
+  <path d="M52 30 L58 22 M60 30 L64 20 M68 30 L74 22" class="ink"/>
+
+  <rect x="88" y="54" width="5" height="42" fill="#cba16b" class="out"/>
+  <circle cx="90.5" cy="50" r="7" fill="#e4bf58" class="out"/>
+  <path d="M86 50 H95 M90.5 45 V55" class="ink"/>
+
+  <path d="M42 71 Q52 67 64 67 Q76 67 86 71 M40 78 Q52 73 64 73 Q76 73 88 78 M42 98 Q54 93 64 93 Q74 93 86 98" class="ink"/>
+  <ellipse cx="64" cy="113" rx="38" ry="8" fill="#4f7f2f" opacity="0.44"/>
+</svg>
