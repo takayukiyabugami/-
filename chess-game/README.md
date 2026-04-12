@@ -49,6 +49,7 @@ powershell -ExecutionPolicy Bypass -File .\tests\verify-golden-static.ps1
 
 - Grassland board style
 - Original high-line shonen-inspired art style (not based on a specific franchise)
+- Next art pass is specified in `../chess-spec/design/` (`mecha-knight` direction)
 - Custom piece illustrations:
   - Pawn: shield + sword
   - Rook: carriage rider

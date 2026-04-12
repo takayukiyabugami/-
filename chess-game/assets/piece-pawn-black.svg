@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Black pawn mech with riot shield and ion blade">
+  <defs>
+    <style>
+      .out { stroke: #0e1015; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+      .ink { stroke: #0e1015; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    </style>
+    <linearGradient id="pb_armor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7b8695"/>
+      <stop offset="1" stop-color="#2b323d"/>
+    </linearGradient>
+    <linearGradient id="pb_trim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b4473a"/>
+      <stop offset="1" stop-color="#7b2622"/>
+    </linearGradient>
+    <linearGradient id="pb_metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8f9bab"/>
+      <stop offset="1" stop-color="#495360"/>
+    </linearGradient>
+    <linearGradient id="pb_blade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3f7ff"/>
+      <stop offset="0.4" stop-color="#a7b4c4"/>
+      <stop offset="1" stop-color="#2d3644"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="128" cy="234" rx="72" ry="14" fill="#2a3940" opacity="0.3"/>
+
+  <rect x="170" y="86" width="34" height="70" rx="8" fill="url(#pb_metal)" class="out"/>
+  <rect x="176" y="96" width="22" height="6" rx="2" fill="#1f252f" class="out"/>
+  <rect x="176" y="108" width="22" height="6" rx="2" fill="#1f252f" class="out"/>
+  <rect x="176" y="120" width="22" height="6" rx="2" fill="#1f252f" class="out"/>
+  <rect x="176" y="132" width="22" height="6" rx="2" fill="#1f252f" class="out"/>
+
+  <path d="M112 54 L126 40 H146 L160 54 L158 74 H114 Z" fill="url(#pb_armor)" class="out"/>
+  <rect x="122" y="56" width="28" height="10" rx="5" fill="#ff8a73" class="out"/>
+  <path d="M120 48 H152 M118 70 H154" class="ink"/>
+
+  <path d="M188 52 L198 40 L208 52 L202 118 L194 118 Z" fill="url(#pb_blade)" class="out"/>
+  <rect x="186" y="116" width="24" height="8" rx="3" fill="#5d3a20" class="out"/>
+
+  <path d="M104 80 C116 64 146 64 160 80 L174 116 C178 128 178 146 170 160 L160 176 H102 L92 160 C84 146 84 128 88 116 Z" fill="url(#pb_armor)" class="out"/>
+  <path d="M104 102 H166 M98 122 H170 M98 142 H170" class="ink"/>
+  <circle cx="114" cy="90" r="3.2" fill="#11141a"/>
+  <circle cx="132" cy="90" r="3.2" fill="#11141a"/>
+  <circle cx="150" cy="90" r="3.2" fill="#11141a"/>
+  <rect x="120" y="146" width="26" height="8" rx="4" fill="#ff8a73" class="out"/>
+
+  <path d="M70 106 L36 118 L30 168 L66 188 L100 174 L100 124 Z" fill="url(#pb_trim)" class="out"/>
+  <path d="M54 126 L84 116 L90 164 L62 176 Z" fill="#60211d" opacity="0.35"/>
+  <path d="M44 154 L78 140 M42 166 L76 152" class="ink"/>
+  <rect x="38" y="176" width="22" height="6" rx="2" fill="#f0b743" class="out"/>
+  <rect x="62" y="168" width="18" height="6" rx="2" fill="#f0b743" class="out"/>
+
+  <path d="M104 176 H132 L126 220 H96 Z" fill="url(#pb_metal)" class="out"/>
+  <path d="M136 176 H162 L168 220 H138 Z" fill="url(#pb_metal)" class="out"/>
+  <rect x="90" y="218" width="40" height="12" rx="4" fill="#252b34" class="out"/>
+  <rect x="136" y="218" width="40" height="12" rx="4" fill="#252b34" class="out"/>
+  <path d="M98 228 H124 M144 228 H170" class="ink"/>
+</svg>

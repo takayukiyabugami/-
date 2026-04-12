@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Black knight mech lancer">
+  <defs>
+    <style>
+      .out { stroke: #0e1015; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+      .ink { stroke: #0e1015; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    </style>
+    <linearGradient id="kb_armor" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7f8b9b"/>
+      <stop offset="1" stop-color="#2e3642"/>
+    </linearGradient>
+    <linearGradient id="kb_steel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#95a2b0"/>
+      <stop offset="1" stop-color="#4c5664"/>
+    </linearGradient>
+    <linearGradient id="kb_lance" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ecf2ff"/>
+      <stop offset="1" stop-color="#6f7f92"/>
+    </linearGradient>
+    <linearGradient id="kb_cloak" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b44739"/>
+      <stop offset="1" stop-color="#6a2320"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="128" cy="236" rx="76" ry="13" fill="#29363f" opacity="0.3"/>
+
+  <path d="M190 46 L200 32 L212 46 L206 136 L196 136 Z" fill="url(#kb_lance)" class="out"/>
+  <rect x="188" y="132" width="28" height="9" rx="3" fill="#5e3a20" class="out"/>
+  <path d="M174 60 L190 66 L188 130 L170 122 Z" fill="url(#kb_cloak)" class="out"/>
+  <path d="M176 72 L188 76 M176 86 L187 90 M175 100 L186 104" class="ink"/>
+
+  <path d="M72 168 C74 128 94 88 140 78 C155 75 173 82 182 96 C190 108 186 126 170 134 L156 142 L160 168 Z" fill="url(#kb_armor)" class="out"/>
+  <path d="M108 92 C124 70 146 56 164 62 C178 66 185 84 179 99 C172 116 153 124 133 126" fill="url(#kb_armor)" class="out"/>
+  <path d="M116 92 Q136 82 156 90 M108 108 Q138 106 160 118" class="ink"/>
+
+  <path d="M130 74 L142 56 H154 L160 74 L152 84 H136 Z" fill="url(#kb_steel)" class="out"/>
+  <path d="M129 88 L147 88 L149 108 L132 114 Z" fill="url(#kb_steel)" class="out"/>
+  <rect x="136" y="92" width="16" height="8" rx="4" fill="#ff8976" class="out"/>
+  <circle cx="150" cy="75" r="2.8" fill="#0f141d"/>
+  <path d="M137 72 H156 M134 100 H151" class="ink"/>
+
+  <path d="M82 164 L116 148 L166 150 L184 170 L174 196 L136 206 L96 203 L76 188 Z" fill="url(#kb_armor)" class="out"/>
+  <path d="M92 170 H170 M94 184 H164" class="ink"/>
+  <rect x="116" y="178" width="30" height="9" rx="4" fill="#ff8976" class="out"/>
+  <circle cx="104" cy="158" r="4" fill="#0f141d"/>
+  <circle cx="124" cy="156" r="4" fill="#0f141d"/>
+
+  <path d="M100 204 H126 L122 228 H92 Z" fill="url(#kb_steel)" class="out"/>
+  <path d="M130 204 H160 L166 228 H136 Z" fill="url(#kb_steel)" class="out"/>
+  <rect x="88" y="226" width="42" height="12" rx="4" fill="#252b34" class="out"/>
+  <rect x="132" y="226" width="44" height="12" rx="4" fill="#252b34" class="out"/>
+  <path d="M95 232 H124 M140 232 H170" class="ink"/>
+</svg>

@@ -33,3 +33,14 @@ This folder defines the shared rule and replay contract for both implementations
   - reject reason for rejected moves
   - resulting side to move when accepted
   - deterministic board hash for replay validation
+
+## Art Direction Pack
+
+Design references for the new `battle mech x knight` pass are here:
+
+- `design/mecha-knight-art-direction.md`
+- `design/design-sheet-production-spec.md`
+- `design/mecha-color-tokens.json`
+- `design/asset-mapping.md`
+- `design/sheets/piece-pawn-sheet-v01.md`
+- `design/sheets/piece-knight-sheet-v01.md`

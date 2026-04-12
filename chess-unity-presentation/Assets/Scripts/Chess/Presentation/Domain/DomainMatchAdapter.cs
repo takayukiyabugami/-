@@ -58,6 +58,15 @@ namespace Chess.Presentation
             }
 
             InitializeDomain();
+        }
+
+        private void Start()
+        {
+            IndexViewBindings();
+        }
+
+        public void RebuildViewIndex()
+        {
             IndexViewBindings();
         }
 
@@ -181,7 +190,20 @@ namespace Chess.Presentation
 
         private Transform ResolvePieceTransform(PieceId pieceId)
         {
-            return _viewById.TryGetValue(pieceId, out PieceViewBinding binding) ? binding.transform : null;
+            if (_viewById.TryGetValue(pieceId, out PieceViewBinding binding) && binding != null)
+            {
+                return binding.transform;
+            }
+
+            // Runtime bootstrap can add PieceViewBinding after this adapter Awake.
+            // Reindex lazily once so early moves do not fail with null transforms.
+            IndexViewBindings();
+            if (_viewById.TryGetValue(pieceId, out binding) && binding != null)
+            {
+                return binding.transform;
+            }
+
+            return null;
         }
 
         private Transform ResolveCapturedTransform(SquareCoord from, SquareCoord to, Piece movingPiece)

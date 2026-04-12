@@ -12,13 +12,21 @@ import {
 } from "./domain.js";
 
 const PIECE_ASSETS = {
-  pawn: "./assets/pawn-heavy-armored-warrior.png",
+  pawn: {
+    w: "./assets/piece-pawn-white.svg",
+    b: "./assets/piece-pawn-black.svg"
+  },
   rook: "./assets/rook-carriage.svg",
   bishop: "./assets/bishop-horse-naginata.svg",
-  knight: "./assets/knight-ninja.svg",
+  knight: {
+    w: "./assets/piece-knight-white.svg",
+    b: "./assets/piece-knight-black.svg"
+  },
   queen: "./assets/queen-robot.svg",
   king: "./assets/king-fat.svg"
 };
+
+const NATIVE_COLOR_TYPES = new Set(["pawn", "knight"]);
 
 const boardElement = document.getElementById("board");
 const statusElement = document.getElementById("status");
@@ -189,12 +197,24 @@ function renderBoard() {
 }
 
 function createPieceImage(piece) {
+  const assetSource = getPieceAsset(piece);
   const image = document.createElement("img");
   image.className = `piece piece-${piece.type} ${piece.color === "w" ? "team-white" : "team-black"}`;
   image.alt = `${piece.color === "w" ? "White" : "Black"} ${piece.type}`;
-  image.src = PIECE_ASSETS[piece.type];
+  image.src = assetSource;
   image.draggable = false;
+  if (NATIVE_COLOR_TYPES.has(piece.type)) {
+    image.classList.add("native-color");
+  }
   return image;
+}
+
+function getPieceAsset(piece) {
+  const configured = PIECE_ASSETS[piece.type];
+  if (typeof configured === "string") {
+    return configured;
+  }
+  return configured[piece.color] || configured.w || configured.b;
 }
 
 function addCoordinates(squareElement, row, col) {

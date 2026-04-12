@@ -28,10 +28,12 @@ namespace Chess.Presentation
         [SerializeField] private CueVfxBinding[] bindings = Array.Empty<CueVfxBinding>();
 
         private readonly Dictionary<CaptureCueId, CuePool> _poolByCue = new Dictionary<CaptureCueId, CuePool>(16);
-        private readonly MaterialPropertyBlock _propertyBlock = new MaterialPropertyBlock();
+        private MaterialPropertyBlock _propertyBlock;
 
         private void Awake()
         {
+            _propertyBlock = new MaterialPropertyBlock();
+
             if (eventBus == null)
             {
                 eventBus = FindObjectOfType<CaptureEventBus>();

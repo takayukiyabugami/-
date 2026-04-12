@@ -1,0 +1,28 @@
+﻿{
+  "theme": "mecha-knight",
+  "version": 1,
+  "factions": {
+    "white": {
+      "armor_primary": "#E8E2D4",
+      "armor_secondary": "#B68B47",
+      "emissive": "#6EEBFF",
+      "shadow": "#3E434A"
+    },
+    "black": {
+      "armor_primary": "#3C4249",
+      "armor_secondary": "#1D2025",
+      "emissive": "#D64545",
+      "shadow": "#090B0E"
+    }
+  },
+  "shared": {
+    "warning_yellow": "#F2B635",
+    "neutral_metal": "#6E7780",
+    "edge_wear": "#B8C0C7"
+  },
+  "vfx": {
+    "move_pulse_intensity": 0.55,
+    "capture_pulse_intensity": 1.0,
+    "impact_glow_falloff": 0.72
+  }
+}

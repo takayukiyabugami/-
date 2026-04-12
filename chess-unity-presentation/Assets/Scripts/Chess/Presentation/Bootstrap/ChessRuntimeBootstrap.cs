@@ -76,6 +76,7 @@ namespace Chess.Presentation
             SetField(perf, "eventBus", bus);
 
             BuildPieceViews(root.transform, boardGrid);
+            adapter.RebuildViewIndex();
 
             if (attachStressRunner)
             {
