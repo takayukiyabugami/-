@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "G01-open-pawn",
+      "initial": "standard",
+      "moves": ["e2e4", "e7e5", "g1f3"],
+      "expectedAccepted": [true, true, true]
+    },
+    {
+      "id": "G02-castle-kingside-white",
+      "initial": "castle-ready-white",
+      "moves": ["e1g1"],
+      "expectedAccepted": [true]
+    },
+    {
+      "id": "G03-en-passant-window",
+      "initial": "en-passant-ready",
+      "moves": ["e5d6", "a7a6", "d6d7"],
+      "expectedAccepted": [true, true, true]
+    },
+    {
+      "id": "G04-promotion-choice",
+      "initial": "promotion-ready",
+      "moves": ["a7a8q"],
+      "expectedAccepted": [true]
+    },
+    {
+      "id": "G05-self-check-rejected",
+      "initial": "self-check-trap",
+      "moves": ["e2e3"],
+      "expectedAccepted": [false],
+      "expectedRejectReason": "MoveLeavesKingInCheck"
+    }
+  ]
+}

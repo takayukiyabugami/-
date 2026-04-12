@@ -1,0 +1,24 @@
+{
+  "name": "Chess.Tests.EditMode",
+  "rootNamespace": "Chess.Presentation.Tests.EditMode",
+  "references": [
+    "Chess.Domain",
+    "Chess.Presentation"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

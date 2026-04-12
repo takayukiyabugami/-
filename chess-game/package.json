@@ -1,0 +1,9 @@
+{
+  "name": "chess-game",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:golden": "node ./tests/golden-parity.test.mjs",
+    "test:golden:static": "powershell -ExecutionPolicy Bypass -File ./tests/verify-golden-static.ps1"
+  }
+}

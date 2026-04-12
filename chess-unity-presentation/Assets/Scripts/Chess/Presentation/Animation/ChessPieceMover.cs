@@ -36,6 +36,15 @@ namespace Chess.Presentation
             [Range(0f, 60f)] public float hitLevel;
         }
 
+        [Serializable]
+        public struct CapturePhaseConfig
+        {
+            [Min(0.01f)] public float anticipationMs;
+            [Min(0.01f)] public float dashMs;
+            [Min(0.01f)] public float impactMs;
+            [Min(0.01f)] public float recoveryMs;
+        }
+
         [Header("General Motion")]
         [SerializeField] private bool useRootMotion = false;
         [SerializeField] private bool allowManualCorrectionInRootMotion = true;
@@ -131,9 +140,17 @@ namespace Chess.Presentation
         [Header("Capture Offsets")]
         [SerializeField] private float anticipationBackStep = 0.14f;
         [SerializeField] private float impactPushScale = 0.08f;
+        [SerializeField] private CapturePhaseConfig capturePhaseConfig = new CapturePhaseConfig
+        {
+            anticipationMs = 140f,
+            dashMs = 110f,
+            impactMs = 80f,
+            recoveryMs = 160f,
+        };
 
         public event Action<string> VfxCueRequested;
         public event Action<string> SeCueRequested;
+        public event Action<CaptureCueId, CaptureCueContext> CaptureCueRequested;
 
         private readonly Dictionary<ChessPieceType, PieceMotionPreset> _presetMap = new Dictionary<ChessPieceType, PieceMotionPreset>(6);
         private int _motionVersion;
@@ -153,7 +170,7 @@ namespace Chess.Presentation
             }
         }
 
-        public IEnumerator PlayMove(in MoveValidationResult validationResult, Action onMoveMidpointEvent)
+        public IEnumerator PlayMove(MoveValidationResult validationResult, Action onMoveMidpointEvent)
         {
             int version = ++_motionVersion;
             if (!TryGetPreset(validationResult.movingPieceType, out PieceMotionPreset preset))
@@ -205,6 +222,7 @@ namespace Chess.Presentation
                     midpointFired = true;
                     onMoveMidpointEvent?.Invoke();
                     NotifyVfx("MoveMid");
+                    NotifyCue(CaptureCueId.FootStep, validationResult, 0.45f);
                 }
 
                 yield return null;
@@ -214,13 +232,19 @@ namespace Chess.Presentation
             SetupAnimator(animator, isCapturing: false, speed: 0f, attackType: 0, hitLevel: 0f, phase: PhaseMove);
         }
 
-        public IEnumerator PlayCapture(in MoveValidationResult validationResult, Action onImpactEvent)
+        public IEnumerator PlayCapture(MoveValidationResult validationResult, Action onImpactEvent)
         {
             int version = ++_motionVersion;
             if (!TryGetPreset(validationResult.movingPieceType, out PieceMotionPreset preset))
             {
                 throw new InvalidOperationException($"No motion preset for {validationResult.movingPieceType}");
             }
+
+            float presetScale = Mathf.Max(0.5f, preset.anticipationDuration / 0.14f);
+            float anticipationDuration = Mathf.Max(0.01f, capturePhaseConfig.anticipationMs * 0.001f * presetScale);
+            float dashDuration = Mathf.Max(0.01f, capturePhaseConfig.dashMs * 0.001f * presetScale);
+            float impactDuration = Mathf.Max(0.01f, capturePhaseConfig.impactMs * 0.001f * presetScale);
+            float recoveryDuration = Mathf.Max(0.01f, capturePhaseConfig.recoveryMs * 0.001f * presetScale);
 
             Transform attacker = validationResult.movingPiece;
             Transform victim = validationResult.capturedPiece;
@@ -255,7 +279,7 @@ namespace Chess.Presentation
                 attacker,
                 anticipationStart,
                 anticipationEnd,
-                preset.anticipationDuration,
+                anticipationDuration,
                 anticipationCurve,
                 ResolveTargetRotation(attackDirection, attacker.rotation));
 
@@ -266,9 +290,10 @@ namespace Chess.Presentation
 
             SetupAnimator(attackerAnimator, isCapturing: true, speed: 1.45f, attackType: (int)validationResult.movingPieceType, hitLevel: preset.hitLevel, phase: PhaseDash);
             NotifySe("CaptureDash");
+            NotifyCue(CaptureCueId.Dash, validationResult, 0.8f);
 
             Vector3 dashTarget = Vector3.LerpUnclamped(anticipationEnd, recoveryTarget, preset.dashDistanceScale);
-            yield return InterpolateSegment(version, attacker, anticipationEnd, dashTarget, preset.dashDuration, dashCurve, ResolveTargetRotation(attackDirection, attacker.rotation));
+            yield return InterpolateSegment(version, attacker, anticipationEnd, dashTarget, dashDuration, dashCurve, ResolveTargetRotation(attackDirection, attacker.rotation));
 
             if (IsInterrupted(version))
             {
@@ -279,6 +304,8 @@ namespace Chess.Presentation
             onImpactEvent?.Invoke();
             NotifyVfx("CaptureImpact");
             NotifySe("CaptureHit");
+            NotifyCue(CaptureCueId.Slash, validationResult, 0.92f);
+            NotifyCue(CaptureCueId.Impact, validationResult, 1.0f);
 
             if (victim != null)
             {
@@ -287,7 +314,7 @@ namespace Chess.Presentation
                 victim.gameObject.SetActive(false);
             }
 
-            float impactEnd = Time.time + preset.impactDuration;
+            float impactEnd = Time.time + impactDuration;
             while (Time.time < impactEnd)
             {
                 if (IsInterrupted(version))
@@ -299,7 +326,7 @@ namespace Chess.Presentation
             }
 
             SetupAnimator(attackerAnimator, isCapturing: true, speed: 1f, attackType: (int)validationResult.movingPieceType, hitLevel: preset.hitLevel * 0.5f, phase: PhaseRecovery);
-            yield return InterpolateSegment(version, attacker, attacker.position, recoveryTarget, preset.recoveryDuration, moveCurve, ResolveTargetRotation(validationResult.worldFacing, attacker.rotation));
+            yield return InterpolateSegment(version, attacker, attacker.position, recoveryTarget, recoveryDuration, moveCurve, ResolveTargetRotation(validationResult.worldFacing, attacker.rotation));
 
             if (IsInterrupted(version))
             {
@@ -308,6 +335,7 @@ namespace Chess.Presentation
 
             SnapToTarget(attacker, recoveryTarget, ResolveTargetRotation(validationResult.worldFacing, attacker.rotation));
             SetupAnimator(attackerAnimator, isCapturing: false, speed: 0f, attackType: 0, hitLevel: 0f, phase: PhaseRecovery);
+            NotifyCue(CaptureCueId.CaptureResolve, validationResult, 0.7f);
         }
 
         public void CancelPresentation()
@@ -335,6 +363,26 @@ namespace Chess.Presentation
             }
 
             NotifyVfx(eventId);
+        }
+
+        public void OnCaptureVfx()
+        {
+            NotifyVfx("CaptureImpact");
+        }
+
+        public void OnCaptureSe()
+        {
+            NotifySe("CaptureHit");
+        }
+
+        public void OnMoveTrailStart()
+        {
+            NotifyVfx("MoveTrailStart");
+        }
+
+        public void OnMoveTrailStop()
+        {
+            NotifyVfx("MoveTrailStop");
         }
 
         private IEnumerator InterpolateSegment(
@@ -416,6 +464,19 @@ namespace Chess.Presentation
         private void NotifySe(string id)
         {
             SeCueRequested?.Invoke(id);
+        }
+
+        private void NotifyCue(CaptureCueId cue, in MoveValidationResult validationResult, float intensity)
+        {
+            CaptureCueContext context = new CaptureCueContext
+            {
+                position = validationResult.worldTo,
+                forward = validationResult.worldFacing == Vector3.zero ? Vector3.forward : validationResult.worldFacing.normalized,
+                side = (validationResult.from.rank + validationResult.from.file) % 2 == 0 ? ChessSide.White : ChessSide.Black,
+                intensity = Mathf.Clamp01(intensity),
+                moveSerial = Time.frameCount,
+            };
+            CaptureCueRequested?.Invoke(cue, context);
         }
 
         private bool TryGetPreset(ChessPieceType pieceType, out PieceMotionPreset preset)

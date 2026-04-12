@@ -8,6 +8,26 @@ Simple browser chess game with no external dependencies.
 2. Click a piece to see legal moves.
 3. Click a highlighted destination to move.
 
+## Architecture
+
+- `domain.js`: pure rule layer (legal move generation, check/checkmate logic, replay, deterministic hash)
+- `script.js`: UI layer (DOM rendering, selection UX, simple presentation effects)
+- shared parity data source: `../chess-spec/golden-moves.json`
+
+## Parity Test
+
+Run golden parity verification:
+
+```bash
+npm run test:golden
+```
+
+If Node.js is not installed yet, run static contract checks with PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tests\verify-golden-static.ps1
+```
+
 ## Rules Implemented
 
 - Piece movement and captures

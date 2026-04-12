@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -43,32 +43,23 @@ namespace Chess.Presentation
         private float _lastAcceptedAt = -100f;
         private BoardSquare _lastAcceptedFrom;
         private BoardSquare _lastAcceptedTo;
+        private int _moveSerial;
 
-        public ChessTurnState CurrentState { get; private set; } = ChessTurnState.Idle;
-        public string LastError { get; private set; } = string.Empty;
+        public TurnState CurrentState { get; private set; } = TurnState.Idle;
+        public string LastErrorCode { get; private set; } = string.Empty;
+        public string LastErrorMessage { get; private set; } = string.Empty;
+        public string LastError => LastErrorMessage;
 
-        public event Action<ChessTurnState, ChessTurnState> StateChanged;
-
+        public bool IsInputOpen => CurrentState == TurnState.Selecting;
         public IReadOnlyCollection<string> TransitionHistory => _transitionHistory;
 
-        private static readonly IReadOnlyDictionary<ChessTurnState, HashSet<ChessTurnState>> TransitionTable =
-            new Dictionary<ChessTurnState, HashSet<ChessTurnState>>
-            {
-                { ChessTurnState.Idle, new HashSet<ChessTurnState> { ChessTurnState.Selecting, ChessTurnState.Locked } },
-                { ChessTurnState.Selecting, new HashSet<ChessTurnState> { ChessTurnState.MoveRequested, ChessTurnState.Idle, ChessTurnState.Locked } },
-                { ChessTurnState.MoveRequested, new HashSet<ChessTurnState> { ChessTurnState.AnimatingMove, ChessTurnState.Selecting, ChessTurnState.Locked } },
-                { ChessTurnState.AnimatingMove, new HashSet<ChessTurnState> { ChessTurnState.ResolvingCapture, ChessTurnState.Locked } },
-                { ChessTurnState.ResolvingCapture, new HashSet<ChessTurnState> { ChessTurnState.PromotionPending, ChessTurnState.SwitchingTurn, ChessTurnState.Locked } },
-                { ChessTurnState.PromotionPending, new HashSet<ChessTurnState> { ChessTurnState.SwitchingTurn, ChessTurnState.Locked } },
-                { ChessTurnState.SwitchingTurn, new HashSet<ChessTurnState> { ChessTurnState.Idle, ChessTurnState.Selecting, ChessTurnState.Locked } },
-                { ChessTurnState.Locked, new HashSet<ChessTurnState> { ChessTurnState.Idle, ChessTurnState.Selecting } },
-            };
-
-        public bool IsInputOpen => CurrentState == ChessTurnState.Selecting;
+        public event Action<TurnState, TurnState> StateChanged;
+        public event Action<CaptureCueId, CaptureCueContext> CaptureCueRequested;
 
         private void Awake()
         {
             AutoWireDependencies();
+
             _inputGateway = inputGatewayBehaviour as IChessInputGateway;
             _moveValidator = moveValidatorBehaviour as IChessMoveValidator;
             _movePresentation = movePresentationBehaviour as IChessMovePresentation;
@@ -77,7 +68,7 @@ namespace Chess.Presentation
             _promotionUi = promotionUiBehaviour as IChessPromotionUI;
 
             ValidateDependencies();
-            PushHistory(ChessTurnState.Idle, ChessTurnState.Idle, "Boot");
+            PushHistory(TurnState.Idle, TurnState.Idle, "Boot");
         }
 
         private void OnEnable()
@@ -110,12 +101,12 @@ namespace Chess.Presentation
 
         public bool OpenSelection()
         {
-            if (CurrentState != ChessTurnState.Idle)
+            if (CurrentState != TurnState.Idle)
             {
                 return false;
             }
 
-            return TryTransitionTo(ChessTurnState.Selecting, "Turn input opened");
+            return TryTransitionTo(TurnState.Selecting, "Turn input opened");
         }
 
         public bool TrySubmitMove(MoveRequest request)
@@ -125,7 +116,7 @@ namespace Chess.Presentation
 
         public bool RecoverFromLocked()
         {
-            if (CurrentState != ChessTurnState.Locked)
+            if (CurrentState != TurnState.Locked)
             {
                 return false;
             }
@@ -139,20 +130,16 @@ namespace Chess.Presentation
             _movePresentation?.CancelPresentation();
             Interlocked.Exchange(ref _requestClaim, 0);
             _latestTokenBySource.Clear();
-            LastError = string.Empty;
+            LastErrorCode = string.Empty;
+            LastErrorMessage = string.Empty;
 
-            if (!TryTransitionTo(ChessTurnState.Idle, "Fail-safe recovery"))
-            {
-                return false;
-            }
-
-            return TryTransitionTo(ChessTurnState.Selecting, "Input restored after recovery");
+            return TryTransitionTo(TurnState.Idle, "Fail-safe recovery");
         }
 
         public bool ForceLock(string reason)
         {
-            Lock(reason);
-            return CurrentState == ChessTurnState.Locked;
+            Lock("FORCED_LOCK", reason);
+            return CurrentState == TurnState.Locked;
         }
 
         private void HandleMoveRequested(MoveRequest request)
@@ -164,11 +151,12 @@ namespace Chess.Presentation
         {
             if (!CanAcceptInput(request, out string rejectReason))
             {
-                LastError = rejectReason;
+                LastErrorCode = "INPUT_REJECTED";
+                LastErrorMessage = rejectReason;
                 return false;
             }
 
-            if (!TryTransitionTo(ChessTurnState.MoveRequested, $"Input accepted {request}"))
+            if (!TryTransitionTo(TurnState.MoveRequested, $"Input accepted {request}"))
             {
                 Interlocked.Exchange(ref _requestClaim, 0);
                 return false;
@@ -182,7 +170,7 @@ namespace Chess.Presentation
         {
             reason = string.Empty;
 
-            if (CurrentState != ChessTurnState.Selecting)
+            if (CurrentState != TurnState.Selecting)
             {
                 reason = $"Input rejected: state={CurrentState}";
                 return false;
@@ -232,133 +220,36 @@ namespace Chess.Presentation
 
         private IEnumerator ExecuteTurnSequence(MoveRequest request)
         {
-            MoveValidationResult validationResult = default;
-            PromotionChoice promotionChoice = PromotionChoice.Queen;
+            int serial = ++_moveSerial;
+            IEnumerator sequence = ExecuteTurnSequenceCore(request, serial);
 
             try
             {
-                float validationStartedAt = Time.realtimeSinceStartup;
-                bool legal = _moveValidator.TryValidate(in request, out validationResult);
-                float validationElapsed = Time.realtimeSinceStartup - validationStartedAt;
-
-                if (validationElapsed > validationTimeoutSeconds)
+                while (true)
                 {
-                    Lock($"Validation timeout: {validationElapsed:F3}s");
-                    yield break;
-                }
-
-                if (!legal || !validationResult.isLegal)
-                {
-                    if (!TryTransitionTo(ChessTurnState.Selecting, "Illegal move rejected"))
+                    bool hasNext;
+                    object current = null;
+                    try
                     {
-                        Lock("Failed to return to Selecting after illegal move");
-                    }
-
-                    yield break;
-                }
-
-                if (!TryTransitionTo(ChessTurnState.AnimatingMove, "Validation passed"))
-                {
-                    Lock("Transition to AnimatingMove failed");
-                    yield break;
-                }
-
-                yield return RunPhaseWithTimeout(
-                    _movePresentation.PlayMove(validationResult, null),
-                    moveTimeoutSeconds,
-                    "AnimatingMove");
-
-                if (CurrentState == ChessTurnState.Locked)
-                {
-                    yield break;
-                }
-
-                if (!TryTransitionTo(ChessTurnState.ResolvingCapture, "Move animation completed"))
-                {
-                    Lock("Transition to ResolvingCapture failed");
-                    yield break;
-                }
-
-                if (validationResult.isCapture)
-                {
-                    yield return RunPhaseWithTimeout(
-                        _movePresentation.PlayCapture(validationResult, null),
-                        captureTimeoutSeconds,
-                        "ResolvingCapture");
-
-                    if (CurrentState == ChessTurnState.Locked)
-                    {
-                        yield break;
-                    }
-                }
-
-                if (validationResult.requiresPromotion)
-                {
-                    if (!TryTransitionTo(ChessTurnState.PromotionPending, "Promotion required"))
-                    {
-                        Lock("Transition to PromotionPending failed");
-                        yield break;
-                    }
-
-                    bool selectionResolved = false;
-                    yield return RunPhaseWithTimeout(
-                        _promotionUi.ResolvePromotion(choice =>
+                        hasNext = sequence.MoveNext();
+                        if (hasNext)
                         {
-                            promotionChoice = choice;
-                            selectionResolved = true;
-                        }),
-                        promotionTimeoutSeconds,
-                        "PromotionPending");
+                            current = sequence.Current;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Lock("UNHANDLED_TURN_EXCEPTION", $"Unhandled turn exception: {ex.Message}");
+                        yield break;
+                    }
 
-                    if (CurrentState == ChessTurnState.Locked)
+                    if (!hasNext)
                     {
                         yield break;
                     }
 
-                    if (!selectionResolved)
-                    {
-                        Lock("Promotion UI ended without selection");
-                        yield break;
-                    }
+                    yield return current;
                 }
-
-                if (!TryTransitionTo(ChessTurnState.SwitchingTurn, "Visual phases finished"))
-                {
-                    Lock("Transition to SwitchingTurn failed");
-                    yield break;
-                }
-
-                try
-                {
-                    _boardCommitter.CommitMove(validationResult, promotionChoice);
-                }
-                catch (Exception commitException)
-                {
-                    Lock($"Commit failed: {commitException.Message}");
-                    yield break;
-                }
-
-                try
-                {
-                    _turnSwitcher.SwitchTurn();
-                }
-                catch (Exception switchException)
-                {
-                    Lock($"Switch turn failed: {switchException.Message}");
-                    yield break;
-                }
-
-                if (!TryTransitionTo(ChessTurnState.Idle, "Turn switched"))
-                {
-                    Lock("Transition to Idle after switching failed");
-                    yield break;
-                }
-
-                TryTransitionTo(ChessTurnState.Selecting, "Input released for next turn");
-            }
-            catch (Exception ex)
-            {
-                Lock($"Unhandled turn exception: {ex.Message}");
             }
             finally
             {
@@ -367,54 +258,169 @@ namespace Chess.Presentation
             }
         }
 
-        private IEnumerator RunPhaseWithTimeout(IEnumerator phaseRoutine, float timeoutSeconds, string phaseName)
+        private IEnumerator ExecuteTurnSequenceCore(MoveRequest request, int serial)
         {
-            float elapsed = 0f;
+            MoveValidationResult validationResult = default;
+            PromotionChoice promotionChoice = PromotionChoice.Queen;
 
-            while (true)
+            EmitCue(CaptureCueId.MoveStart, request, validationResult, serial, 0.55f);
+
+            float validationStartedAt = Time.realtimeSinceStartup;
+            bool legal = _moveValidator.TryValidate(in request, out validationResult);
+            float validationElapsed = Time.realtimeSinceStartup - validationStartedAt;
+            if (validationElapsed > validationTimeoutSeconds)
             {
-                bool hasNext;
-                object currentYield;
-
-                try
-                {
-                    hasNext = phaseRoutine.MoveNext();
-                    currentYield = phaseRoutine.Current;
-                }
-                catch (Exception ex)
-                {
-                    Lock($"{phaseName} crashed: {ex.Message}");
-                    yield break;
-                }
-
-                if (!hasNext)
-                {
-                    yield break;
-                }
-
-                elapsed += Time.unscaledDeltaTime;
-                if (elapsed > timeoutSeconds)
-                {
-                    Lock($"{phaseName} timeout {elapsed:F3}s > {timeoutSeconds:F3}s");
-                    yield break;
-                }
-
-                yield return currentYield;
+                Lock("VALIDATION_TIMEOUT", $"Validation timeout: {validationElapsed:F3}s");
+                yield break;
             }
+
+            if (!legal || !validationResult.isLegal)
+            {
+                if (!TryTransitionTo(TurnState.Selecting, "Illegal move rejected"))
+                {
+                    Lock("STATE_RECOVERY_FAIL", "Failed to return to Selecting after illegal move");
+                }
+
+                yield break;
+            }
+
+            if (!TryTransitionTo(TurnState.AnimatingMove, "Validation passed"))
+            {
+                Lock("STATE_TRANSITION_FAIL", "Transition to AnimatingMove failed");
+                yield break;
+            }
+
+            yield return TimeoutWatchdog.Guard(
+                _movePresentation.PlayMove(validationResult, null),
+                moveTimeoutSeconds,
+                msg => Lock("MOVE_TIMEOUT_OR_CRASH", msg),
+                "AnimatingMove");
+
+            if (CurrentState == TurnState.Locked)
+            {
+                yield break;
+            }
+
+            EmitCue(CaptureCueId.FootStep, request, validationResult, serial, 0.4f);
+
+            if (validationResult.isCapture)
+            {
+                if (!TryTransitionTo(TurnState.ResolvingCapture, "Move animation completed"))
+                {
+                    Lock("STATE_TRANSITION_FAIL", "Transition to ResolvingCapture failed");
+                    yield break;
+                }
+
+                EmitCue(CaptureCueId.Dash, request, validationResult, serial, 0.8f);
+                EmitCue(CaptureCueId.Slash, request, validationResult, serial, 0.9f);
+                yield return TimeoutWatchdog.Guard(
+                    _movePresentation.PlayCapture(validationResult, null),
+                    captureTimeoutSeconds,
+                    msg => Lock("CAPTURE_TIMEOUT_OR_CRASH", msg),
+                    "ResolvingCapture");
+
+                if (CurrentState == TurnState.Locked)
+                {
+                    yield break;
+                }
+
+                EmitCue(CaptureCueId.Impact, request, validationResult, serial, 1f);
+                EmitCue(CaptureCueId.CaptureResolve, request, validationResult, serial, 0.75f);
+            }
+
+            if (validationResult.requiresPromotion)
+            {
+                if (!TryTransitionTo(TurnState.PromotionPending, "Promotion required"))
+                {
+                    Lock("STATE_TRANSITION_FAIL", "Transition to PromotionPending failed");
+                    yield break;
+                }
+
+                bool selectionResolved = false;
+                yield return TimeoutWatchdog.Guard(
+                    _promotionUi.ResolvePromotion(choice =>
+                    {
+                        promotionChoice = choice;
+                        selectionResolved = true;
+                    }),
+                    promotionTimeoutSeconds,
+                    msg => Lock("PROMOTION_TIMEOUT_OR_CRASH", msg),
+                    "PromotionPending");
+
+                if (CurrentState == TurnState.Locked)
+                {
+                    yield break;
+                }
+
+                if (!selectionResolved)
+                {
+                    Lock("PROMOTION_SELECTION_MISSING", "Promotion UI ended without selection");
+                    yield break;
+                }
+            }
+
+            if (!TryTransitionTo(TurnState.SwitchingTurn, "Visual phases finished"))
+            {
+                Lock("STATE_TRANSITION_FAIL", "Transition to SwitchingTurn failed");
+                yield break;
+            }
+
+            try
+            {
+                _boardCommitter.CommitMove(validationResult, promotionChoice);
+            }
+            catch (Exception commitException)
+            {
+                Lock("COMMIT_FAILED", $"Commit failed: {commitException.Message}");
+                yield break;
+            }
+
+            try
+            {
+                _turnSwitcher.SwitchTurn();
+            }
+            catch (Exception switchException)
+            {
+                Lock("TURN_SWITCH_FAILED", $"Switch turn failed: {switchException.Message}");
+                yield break;
+            }
+
+            EmitCue(CaptureCueId.TurnSwitch, request, validationResult, serial, 0.35f);
+
+            if (!TryTransitionTo(TurnState.Idle, "Turn switched"))
+            {
+                Lock("STATE_TRANSITION_FAIL", "Transition to Idle after switching failed");
+                yield break;
+            }
+
+            TryTransitionTo(TurnState.Selecting, "Input released for next turn");
         }
 
-        private bool TryTransitionTo(ChessTurnState next, string reason)
+        private void EmitCue(CaptureCueId cue, in MoveRequest request, in MoveValidationResult validationResult, int moveSerial, float intensity)
         {
-            if (!TransitionTable.TryGetValue(CurrentState, out HashSet<ChessTurnState> allowedStates) ||
-                !allowedStates.Contains(next))
+            CaptureCueContext context = new CaptureCueContext
+            {
+                position = validationResult.worldTo,
+                forward = validationResult.worldFacing == Vector3.zero ? Vector3.forward : validationResult.worldFacing,
+                side = request.sourceId % 2 == 0 ? ChessSide.Black : ChessSide.White,
+                intensity = Mathf.Clamp01(intensity),
+                moveSerial = moveSerial,
+            };
+            CaptureCueRequested?.Invoke(cue, context);
+        }
+
+        private bool TryTransitionTo(TurnState next, string reason)
+        {
+            if (!StateTransitionTable.CanTransition(CurrentState, next))
             {
                 string message = $"Invalid transition {CurrentState} -> {next}. {reason}";
-                LastError = message;
+                LastErrorCode = "INVALID_TRANSITION";
+                LastErrorMessage = message;
                 PushHistory(CurrentState, CurrentState, $"Rejected: {message}");
                 return false;
             }
 
-            ChessTurnState previous = CurrentState;
+            TurnState previous = CurrentState;
             CurrentState = next;
             ApplyInputGateByState(next);
             PushHistory(previous, next, reason);
@@ -422,18 +428,17 @@ namespace Chess.Presentation
             return true;
         }
 
-        private void ApplyInputGateByState(ChessTurnState state)
+        private void ApplyInputGateByState(TurnState state)
         {
             if (_inputGateway == null)
             {
                 return;
             }
 
-            bool enabled = state == ChessTurnState.Selecting;
-            _inputGateway.SetInputEnabled(enabled);
+            _inputGateway.SetInputEnabled(state == TurnState.Selecting);
         }
 
-        private void PushHistory(ChessTurnState from, ChessTurnState to, string reason)
+        private void PushHistory(TurnState from, TurnState to, string reason)
         {
             while (_transitionHistory.Count >= transitionHistoryCapacity)
             {
@@ -444,9 +449,10 @@ namespace Chess.Presentation
             _transitionHistory.Enqueue(stamp);
         }
 
-        private void Lock(string reason)
+        private void Lock(string code, string reason)
         {
-            LastError = reason;
+            LastErrorCode = code;
+            LastErrorMessage = reason;
 
             if (_turnRoutine != null)
             {
@@ -457,13 +463,13 @@ namespace Chess.Presentation
             _movePresentation?.CancelPresentation();
             Interlocked.Exchange(ref _requestClaim, 0);
 
-            if (CurrentState == ChessTurnState.Locked)
+            if (CurrentState == TurnState.Locked)
             {
-                PushHistory(ChessTurnState.Locked, ChessTurnState.Locked, reason);
+                PushHistory(TurnState.Locked, TurnState.Locked, reason);
                 return;
             }
 
-            if (!TryTransitionTo(ChessTurnState.Locked, reason))
+            if (!TryTransitionTo(TurnState.Locked, reason))
             {
                 PushHistory(CurrentState, CurrentState, $"Lock fallback: {reason}");
             }
@@ -540,10 +546,9 @@ namespace Chess.Presentation
             MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
             for (int i = 0; i < behaviours.Length; i++)
             {
-                MonoBehaviour candidate = behaviours[i];
-                if (candidate is T)
+                if (behaviours[i] is T)
                 {
-                    return candidate;
+                    return behaviours[i];
                 }
             }
 

@@ -14,7 +14,7 @@ namespace Chess.Presentation.Tests.PlayMode
             TestRig rig = CreateRig();
             yield return null;
 
-            Assert.AreEqual(ChessTurnState.Selecting, rig.controller.CurrentState);
+            Assert.AreEqual(TurnState.Selecting, rig.controller.CurrentState);
             Assert.IsTrue(rig.input.Enabled);
 
             Cleanup(rig);
@@ -29,7 +29,7 @@ namespace Chess.Presentation.Tests.PlayMode
             MoveRequest request = MakeRequest(1, 1, 1);
             Assert.IsTrue(rig.controller.TrySubmitMove(request));
 
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 2f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
 
             CollectionAssert.AreEqual(
                 new[] { "Move", "Commit", "Switch" },
@@ -48,7 +48,7 @@ namespace Chess.Presentation.Tests.PlayMode
             rig.validator.Configure(legal: false, capture: false, promotion: false);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(2, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 1f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 1f);
 
             Assert.AreEqual(0, rig.committer.CommitCount);
             Assert.AreEqual(0, rig.switcher.SwitchCount);
@@ -64,7 +64,7 @@ namespace Chess.Presentation.Tests.PlayMode
             rig.validator.Configure(legal: true, capture: true, promotion: false);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(3, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 2f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
 
             CollectionAssert.AreEqual(
                 new[] { "Move", "Capture", "Commit", "Switch" },
@@ -82,7 +82,7 @@ namespace Chess.Presentation.Tests.PlayMode
             rig.promotion.ResolveTo = PromotionChoice.Knight;
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(4, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 2f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
 
             Assert.AreEqual(PromotionChoice.Knight, rig.committer.LastPromotionChoice);
             CollectionAssert.AreEqual(
@@ -102,10 +102,10 @@ namespace Chess.Presentation.Tests.PlayMode
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(5, 1, 1)));
             yield return null;
 
-            Assert.AreEqual(ChessTurnState.AnimatingMove, rig.controller.CurrentState);
+            Assert.AreEqual(TurnState.AnimatingMove, rig.controller.CurrentState);
             Assert.IsFalse(rig.controller.TrySubmitMove(MakeRequest(6, 2, 2)));
 
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 2f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
             Assert.AreEqual(1, rig.validator.ValidateCalls);
 
             Cleanup(rig);
@@ -123,7 +123,7 @@ namespace Chess.Presentation.Tests.PlayMode
             Assert.IsTrue(first);
             Assert.IsFalse(second);
 
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 2f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
             Assert.AreEqual(1, rig.validator.ValidateCalls);
 
             Cleanup(rig);
@@ -143,7 +143,7 @@ namespace Chess.Presentation.Tests.PlayMode
                 Time.realtimeSinceStartup);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(request));
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 1f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 1f);
 
             MoveRequest duplicate = new MoveRequest(
                 request.from,
@@ -164,7 +164,7 @@ namespace Chess.Presentation.Tests.PlayMode
             rig.validator.Configure(legal: false, capture: false, promotion: false);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(12, 1, 9)));
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 1f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 1f);
 
             Assert.IsFalse(rig.controller.TrySubmitMove(MakeRequest(11, 1, 9)));
 
@@ -180,7 +180,7 @@ namespace Chess.Presentation.Tests.PlayMode
             SetPrivateField(rig.controller, "moveTimeoutSeconds", 0.05f);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(13, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Locked, 1f);
+            yield return WaitForState(rig.controller, TurnState.Locked, 1f);
 
             Assert.AreEqual(0, rig.committer.CommitCount);
             StringAssert.Contains("timeout", rig.controller.LastError.ToLowerInvariant());
@@ -197,7 +197,7 @@ namespace Chess.Presentation.Tests.PlayMode
             SetPrivateField(rig.controller, "captureTimeoutSeconds", 0.05f);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(14, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Locked, 1.5f);
+            yield return WaitForState(rig.controller, TurnState.Locked, 1.5f);
 
             Assert.AreEqual(0, rig.committer.CommitCount);
             StringAssert.Contains("timeout", rig.controller.LastError.ToLowerInvariant());
@@ -214,7 +214,7 @@ namespace Chess.Presentation.Tests.PlayMode
             SetPrivateField(rig.controller, "promotionTimeoutSeconds", 0.05f);
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(15, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Locked, 1.5f);
+            yield return WaitForState(rig.controller, TurnState.Locked, 1.5f);
 
             Assert.AreEqual(0, rig.committer.CommitCount);
             StringAssert.Contains("promotion", rig.controller.LastError.ToLowerInvariant());
@@ -230,11 +230,13 @@ namespace Chess.Presentation.Tests.PlayMode
             rig.committer.ThrowOnCommit = true;
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(16, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Locked, 1f);
+            yield return WaitForState(rig.controller, TurnState.Locked, 1f);
 
             Assert.IsTrue(rig.controller.RecoverFromLocked());
             yield return null;
-            Assert.AreEqual(ChessTurnState.Selecting, rig.controller.CurrentState);
+            Assert.AreEqual(TurnState.Idle, rig.controller.CurrentState);
+            Assert.IsTrue(rig.controller.OpenSelection());
+            Assert.AreEqual(TurnState.Selecting, rig.controller.CurrentState);
             Assert.IsTrue(string.IsNullOrEmpty(rig.controller.LastError));
 
             Cleanup(rig);
@@ -248,7 +250,7 @@ namespace Chess.Presentation.Tests.PlayMode
             rig.switcher.ThrowOnSwitch = true;
 
             Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(17, 1, 1)));
-            yield return WaitForState(rig.controller, ChessTurnState.Locked, 1f);
+            yield return WaitForState(rig.controller, TurnState.Locked, 1f);
 
             Assert.AreEqual(1, rig.committer.CommitCount);
             Assert.AreEqual(0, rig.switcher.SwitchCount);
@@ -266,7 +268,7 @@ namespace Chess.Presentation.Tests.PlayMode
             yield return null;
             rig.input.Emit(MakeRequest(19, 2, 1));
 
-            yield return WaitForState(rig.controller, ChessTurnState.Selecting, 2f);
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
             Assert.AreEqual(1, rig.validator.ValidateCalls);
 
             Cleanup(rig);
@@ -279,12 +281,51 @@ namespace Chess.Presentation.Tests.PlayMode
             yield return null;
 
             // Selecting -> PromotionPending is forbidden and must be rejected internally.
-            bool transitioned = InvokeTransition(rig.controller, ChessTurnState.PromotionPending, "Test invalid hop");
+            bool transitioned = InvokeTransition(rig.controller, TurnState.PromotionPending, "Test invalid hop");
 
             Assert.IsFalse(transitioned);
-            Assert.AreEqual(ChessTurnState.Selecting, rig.controller.CurrentState);
+            Assert.AreEqual(TurnState.Selecting, rig.controller.CurrentState);
             StringAssert.Contains("Invalid transition", rig.controller.LastError);
 
+            Cleanup(rig);
+        }
+
+        [UnityTest]
+        public IEnumerator LockedState_RejectsInputUntilRecovery()
+        {
+            TestRig rig = CreateRig();
+            rig.validator.Configure(legal: true, capture: false, promotion: false);
+            rig.presentation.MoveDuration = 0.5f;
+            SetPrivateField(rig.controller, "moveTimeoutSeconds", 0.05f);
+
+            Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(20, 1, 1)));
+            yield return WaitForState(rig.controller, TurnState.Locked, 1f);
+
+            Assert.IsFalse(rig.controller.TrySubmitMove(MakeRequest(21, 1, 2)));
+            Assert.AreEqual("INPUT_REJECTED", rig.controller.LastErrorCode);
+
+            Assert.IsTrue(rig.controller.RecoverFromLocked());
+            Assert.IsTrue(rig.controller.OpenSelection());
+            Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest(22, 1, 3)));
+
+            yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
+            Cleanup(rig);
+        }
+
+        [UnityTest]
+        public IEnumerator TransitionHistory_KeepsRecentEntries()
+        {
+            TestRig rig = CreateRig();
+            rig.validator.Configure(legal: true, capture: false, promotion: false);
+            SetPrivateField(rig.controller, "transitionHistoryCapacity", 8);
+
+            for (int i = 0; i < 5; i++)
+            {
+                Assert.IsTrue(rig.controller.TrySubmitMove(MakeRequest((ulong)(30 + i), 1, i + 1)));
+                yield return WaitForState(rig.controller, TurnState.Selecting, 2f);
+            }
+
+            Assert.LessOrEqual(rig.controller.TransitionHistory.Count, 8);
             Cleanup(rig);
         }
 
@@ -299,7 +340,7 @@ namespace Chess.Presentation.Tests.PlayMode
                 now);
         }
 
-        private static IEnumerator WaitForState(ChessTurnController controller, ChessTurnState target, float timeoutSeconds)
+        private static IEnumerator WaitForState(ChessTurnController controller, TurnState target, float timeoutSeconds)
         {
             float end = Time.realtimeSinceStartup + timeoutSeconds;
             while (Time.realtimeSinceStartup < end)
@@ -322,7 +363,7 @@ namespace Chess.Presentation.Tests.PlayMode
             field.SetValue(target, value);
         }
 
-        private static bool InvokeTransition(ChessTurnController controller, ChessTurnState next, string reason)
+        private static bool InvokeTransition(ChessTurnController controller, TurnState next, string reason)
         {
             var method = typeof(ChessTurnController).GetMethod("TryTransitionTo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             Assert.IsNotNull(method);
@@ -470,7 +511,7 @@ namespace Chess.Presentation.Tests.PlayMode
             public int CaptureCalls;
             public System.Collections.Generic.List<string> FlowLog;
 
-            public IEnumerator PlayMove(in MoveValidationResult validationResult, Action onMoveMidpointEvent)
+            public IEnumerator PlayMove(MoveValidationResult validationResult, Action onMoveMidpointEvent)
             {
                 FlowLog?.Add("Move");
                 float end = Time.realtimeSinceStartup + MoveDuration;
@@ -483,7 +524,7 @@ namespace Chess.Presentation.Tests.PlayMode
                 validationResult.movingPiece.position = validationResult.worldTo;
             }
 
-            public IEnumerator PlayCapture(in MoveValidationResult validationResult, Action onImpactEvent)
+            public IEnumerator PlayCapture(MoveValidationResult validationResult, Action onImpactEvent)
             {
                 CaptureCalls++;
                 FlowLog?.Add("Capture");

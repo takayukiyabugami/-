@@ -4,6 +4,19 @@ using UnityEngine;
 
 namespace Chess.Presentation
 {
+    public enum TurnState
+    {
+        Idle = 0,
+        Selecting = 1,
+        MoveRequested = 2,
+        AnimatingMove = 3,
+        ResolvingCapture = 4,
+        PromotionPending = 5,
+        SwitchingTurn = 6,
+        Locked = 7,
+    }
+
+    [Obsolete("Use TurnState.")]
     public enum ChessTurnState
     {
         Idle = 0,
@@ -24,6 +37,33 @@ namespace Chess.Presentation
         Rook = 3,
         Queen = 4,
         King = 5,
+    }
+
+    public enum CaptureCueId
+    {
+        MoveStart = 0,
+        FootStep = 1,
+        Dash = 2,
+        Slash = 3,
+        Impact = 4,
+        CaptureResolve = 5,
+        TurnSwitch = 6,
+    }
+
+    public enum ChessSide
+    {
+        White = 0,
+        Black = 1,
+    }
+
+    [Serializable]
+    public struct CaptureCueContext
+    {
+        public Vector3 position;
+        public Vector3 forward;
+        public ChessSide side;
+        public float intensity;
+        public int moveSerial;
     }
 
     public enum PromotionChoice
@@ -149,8 +189,13 @@ namespace Chess.Presentation
 
     public interface IChessMovePresentation
     {
-        IEnumerator PlayMove(in MoveValidationResult validationResult, Action onMoveMidpointEvent);
-        IEnumerator PlayCapture(in MoveValidationResult validationResult, Action onImpactEvent);
+        IEnumerator PlayMove(MoveValidationResult validationResult, Action onMoveMidpointEvent);
+        IEnumerator PlayCapture(MoveValidationResult validationResult, Action onImpactEvent);
         void CancelPresentation();
+    }
+
+    public interface ICaptureCuePlayer
+    {
+        void Play(CaptureCueId cue, in CaptureCueContext ctx);
     }
 }

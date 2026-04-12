@@ -42,16 +42,17 @@ namespace Chess.Presentation
 
             GUILayout.Label($"State: {controller.CurrentState}");
             GUILayout.Label($"InputOpen: {controller.IsInputOpen}");
-            GUILayout.Label($"LastError: {(string.IsNullOrEmpty(controller.LastError) ? "(none)" : controller.LastError)}");
+            GUILayout.Label($"LastErrorCode: {(string.IsNullOrEmpty(controller.LastErrorCode) ? "(none)" : controller.LastErrorCode)}");
+            GUILayout.Label($"LastErrorMessage: {(string.IsNullOrEmpty(controller.LastErrorMessage) ? "(none)" : controller.LastErrorMessage)}");
 
             GUILayout.BeginHorizontal();
-            GUI.enabled = controller.CurrentState == ChessTurnState.Locked;
+            GUI.enabled = controller.CurrentState == TurnState.Locked;
             if (GUILayout.Button("Recover From Locked", GUILayout.Width(180f)))
             {
                 controller.RecoverFromLocked();
             }
 
-            GUI.enabled = controller.CurrentState == ChessTurnState.Idle;
+            GUI.enabled = controller.CurrentState == TurnState.Idle;
             if (GUILayout.Button("Open Selection", GUILayout.Width(140f)))
             {
                 controller.OpenSelection();
