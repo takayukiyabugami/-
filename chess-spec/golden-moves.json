@@ -28,7 +28,7 @@
     {
       "id": "G05-self-check-rejected",
       "initial": "self-check-trap",
-      "moves": ["e2e3"],
+      "moves": ["e2f2"],
       "expectedAccepted": [false],
       "expectedRejectReason": "MoveLeavesKingInCheck"
     }

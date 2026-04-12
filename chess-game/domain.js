@@ -389,8 +389,12 @@ export function applyMove(targetState, move, options = {}) {
     piece.type = promotionType;
   }
 
-  const notation = formatNotation(targetState, move, capture, promotionType, defendingColor);
   targetState.turn = defendingColor;
+  if (simulate) {
+    return { accepted: true, notation: null, capture, promotionType };
+  }
+
+  const notation = formatNotation(targetState, move, capture, promotionType, defendingColor);
   if (!simulate) {
     targetState.history.push(notation);
   }

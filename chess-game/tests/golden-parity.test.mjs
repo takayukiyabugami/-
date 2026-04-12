@@ -90,13 +90,18 @@ function buildInitialState(name) {
         ["b", "king", "e8"]
       ]);
     case "en-passant-ready":
-      return fromPieces("b", [
-        ["w", "king", "e1"],
-        ["b", "king", "e8"],
-        ["w", "pawn", "e5"],
-        ["b", "pawn", "d7"],
-        ["b", "pawn", "a7"]
-      ]);
+      {
+        const state = fromPieces("w", [
+          ["w", "king", "e1"],
+          ["b", "king", "e8"],
+          ["w", "pawn", "e5"],
+          ["b", "pawn", "d5"],
+          ["b", "pawn", "a7"]
+        ]);
+        // Represents a just-played d7-d5 so white can play e5xd6 en passant.
+        state.enPassant = parseSquare("d6");
+        return state;
+      }
     case "promotion-ready":
       return fromPieces("w", [
         ["w", "king", "e1"],
