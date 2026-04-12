@@ -4,9 +4,17 @@ Simple browser chess game with no external dependencies.
 
 ## Run
 
-1. Open `index.html` in a browser.
-2. Click a piece to see legal moves.
-3. Click a highlighted destination to move.
+1. Start local server (recommended):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start-local.ps1
+```
+
+2. Open `http://localhost:5173/` in browser.
+3. Click a piece to see legal moves.
+4. Click a highlighted destination to move.
+
+`file://` direct-open can fail in some browsers when loading ES modules. Use local server when board is blank.
 
 ## Architecture
 
