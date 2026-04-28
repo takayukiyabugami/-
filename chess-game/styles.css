@@ -107,6 +107,25 @@ button:hover {
     inset 0 0 0 2px #987147;
 }
 
+.version-badge {
+  position: fixed;
+  right: 12px;
+  bottom: 10px;
+  z-index: 99;
+  min-width: 168px;
+  padding: 6px 10px;
+  border: 1px solid rgba(20, 45, 32, 0.35);
+  border-radius: 6px;
+  color: #f8fff6;
+  background: rgba(18, 37, 28, 0.82);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+}
+
 .square {
   display: flex;
   align-items: center;
@@ -182,6 +201,18 @@ button:hover {
 
 .square.under-attack {
   animation: targetShake 0.34s linear;
+}
+
+.square.move-landing {
+  animation: landingPulse 0.34s ease-out;
+}
+
+.square.slash-impact {
+  animation: slashBoardFlash 0.58s ease-out;
+}
+
+.square.collapse-impact {
+  animation: pawnCutShock 0.72s ease-out;
 }
 
 .square.under-attack-king {
@@ -312,6 +343,7 @@ button:hover {
   animation: kingCrush 0.76s ease-in-out forwards;
 }
 
+.piece.moving-source-hidden,
 .piece-icon.moving-source-hidden {
   opacity: 0;
 }
@@ -320,23 +352,72 @@ button:hover {
   --move-x: 0px;
   --move-y: 0px;
   --move-duration: 340ms;
+  --ghost-x: 0px;
+  --ghost-y: 0px;
   --run-angle: 0deg;
   position: absolute;
   left: 0;
   top: 0;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) translate(var(--ghost-x), var(--ghost-y));
   pointer-events: none;
   z-index: 26;
+  will-change: transform;
 }
 
 .move-ghost.moving {
-  animation: pieceGlide var(--move-duration) linear forwards;
+  transform: translate(-50%, -50%) translate(var(--ghost-x), var(--ghost-y));
 }
 
 .move-ghost .piece-icon {
   width: 100%;
   height: 100%;
+}
+
+.move-ghost.walking .piece-icon {
+  animation: walkBob 0.36s ease-in-out infinite;
+  transform-origin: 50% 76%;
+}
+
+.move-ghost.running .piece-icon {
   animation: runBob 0.14s ease-in-out infinite alternate;
+  transform-origin: 50% 76%;
+}
+
+.move-ghost.slashing .piece-icon {
+  animation: slashLunge 0.76s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+  transform-origin: 50% 72%;
+}
+
+.move-ghost.pawn-stab .piece-icon {
+  animation: pawnCharacterStab 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+  transform-origin: 50% 78%;
+}
+
+.move-ghost.walking::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 84%;
+  width: 48%;
+  height: 16%;
+  border-radius: 999px;
+  background: rgba(48, 61, 46, 0.28);
+  transform: translate(-50%, -50%);
+  animation: footStepPulse 0.36s ease-in-out infinite;
+}
+
+.move-ghost.walking::after {
+  content: "";
+  position: absolute;
+  left: 42%;
+  top: 88%;
+  width: 12%;
+  height: 5%;
+  border-radius: 999px;
+  background: rgba(239, 252, 223, 0.44);
+  box-shadow: 22px 0 0 rgba(239, 252, 223, 0.24);
+  transform: rotate(var(--run-angle));
+  animation: footStepPulse 0.72s ease-in-out infinite;
 }
 
 .move-ghost.running::before {
@@ -370,7 +451,7 @@ button:hover {
   animation: runDust 0.28s ease-out infinite;
 }
 
-.move-ghost.piece-pawn .piece-icon {
+.move-ghost.piece-pawn.walking .piece-icon {
   animation: pawnWalkBody 0.64s linear infinite;
   transform-origin: 50% 72%;
 }
@@ -417,6 +498,24 @@ button:hover {
   object-fit: contain;
   object-position: 50% 100%;
   border-radius: 0;
+}
+
+.piece.promoted-pawn,
+.piece-icon.promoted-pawn {
+  width: 98%;
+  height: 106%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+
+.piece.defeated-by-pawn {
+  animation: defeatedByPawn 0.68s cubic-bezier(0.16, 0.78, 0.28, 1) forwards;
+  filter:
+    grayscale(0.25)
+    brightness(0.84)
+    drop-shadow(0 8px 3px rgba(0, 0, 0, 0.36));
+  transform-origin: 50% 88%;
+  z-index: 5;
 }
 
 .piece.team-black,
@@ -504,6 +603,102 @@ button:hover {
   }
 }
 
+@keyframes walkBob {
+  0% {
+    transform: translateY(1.4px) rotate(-0.7deg);
+  }
+  50% {
+    transform: translateY(-1.6px) rotate(0.7deg);
+  }
+  100% {
+    transform: translateY(1.4px) rotate(-0.7deg);
+  }
+}
+
+@keyframes slashLunge {
+  0% {
+    transform: translateY(0) rotate(-6deg) scale(0.94);
+  }
+  28% {
+    transform: translateY(-5px) rotate(5deg) scale(1.06);
+  }
+  58% {
+    transform: translateY(2px) rotate(-9deg) scale(1.1);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes pawnCharacterStab {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  38% {
+    transform: translateY(-3px) rotate(-2deg) scale(1.02);
+  }
+  52% {
+    transform: translateY(-8px) translateX(-8%) rotate(-13deg) scale(1.06);
+  }
+  64% {
+    transform: translateY(1px) translateX(18%) rotate(16deg) scale(1.16, 0.92);
+  }
+  72% {
+    transform: translateY(0) translateX(8%) rotate(8deg) scale(1.04, 0.98);
+  }
+  100% {
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes defeatedByPawn {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  22% {
+    opacity: 1;
+    transform: translate(4%, -7%) rotate(-8deg) scale(1.04, 0.98);
+  }
+  58% {
+    opacity: 0.94;
+    transform: translate(13%, 8%) rotate(58deg) scale(0.98, 0.86);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(22%, 24%) rotate(92deg) scale(0.82, 0.42);
+  }
+}
+
+@keyframes footStepPulse {
+  0% {
+    opacity: 0.18;
+    transform: translate(-50%, -50%) scaleX(0.72);
+  }
+  50% {
+    opacity: 0.58;
+    transform: translate(-50%, -50%) scaleX(1.08);
+  }
+  100% {
+    opacity: 0.18;
+    transform: translate(-50%, -50%) scaleX(0.72);
+  }
+}
+
+@keyframes pawnCutShock {
+  0% {
+    box-shadow: inset 0 0 0 0 rgba(255, 250, 205, 0);
+  }
+  30% {
+    box-shadow:
+      inset 0 0 0 6px rgba(255, 250, 205, 0.9),
+      inset 0 0 24px rgba(255, 255, 255, 0.48);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(255, 250, 205, 0);
+  }
+}
+
 @keyframes speedStreak {
   0% {
     opacity: 0.22;
@@ -583,6 +778,32 @@ button:hover {
   }
   100% {
     transform: translate(0, 0);
+  }
+}
+
+@keyframes landingPulse {
+  0% {
+    box-shadow: inset 0 0 0 0 rgba(255, 245, 180, 0);
+  }
+  45% {
+    box-shadow: inset 0 0 0 5px rgba(255, 245, 180, 0.54);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(255, 245, 180, 0);
+  }
+}
+
+@keyframes slashBoardFlash {
+  0% {
+    box-shadow: inset 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+  24% {
+    box-shadow:
+      inset 0 0 0 5px rgba(255, 248, 191, 0.86),
+      inset 0 0 22px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(255, 255, 255, 0);
   }
 }
 
@@ -802,12 +1023,18 @@ button:hover {
 @media (prefers-reduced-motion: reduce) {
   .move-ghost,
   .move-ghost .piece-icon,
+  .move-ghost.walking::before,
+  .move-ghost.walking::after,
   .move-ghost.running::before,
   .move-ghost.running::after,
   .move-ghost.piece-pawn.walking::before,
   .move-ghost.piece-pawn.walking::after,
+  .square.move-landing,
+  .square.slash-impact,
+  .square.collapse-impact,
   .square.under-attack,
   .square.under-attack-king,
+  .piece.defeated-by-pawn,
   .capture-fx {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Black pawn armored infantry">
+  <defs>
+    <style>
+      .out { stroke: #121212; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+      .ink { stroke: #171717; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .trim { stroke: #b08b55; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    </style>
+    <linearGradient id="bn_metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6f7378"/>
+      <stop offset="0.48" stop-color="#22262a"/>
+      <stop offset="1" stop-color="#050608"/>
+    </linearGradient>
+    <linearGradient id="bn_cloth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#202124"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <linearGradient id="bn_leather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6a4b2d"/>
+      <stop offset="1" stop-color="#2b1d13"/>
+    </linearGradient>
+    <linearGradient id="bn_blade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef2f4"/>
+      <stop offset="0.62" stop-color="#7f868c"/>
+      <stop offset="1" stop-color="#171a1f"/>
+    </linearGradient>
+  </defs>
+
+  <g id="shadow">
+    <ellipse cx="121" cy="238" rx="70" ry="12" fill="#111" opacity="0.22"/>
+  </g>
+
+  <g id="banner">
+    <path d="M159 34 H205 L200 48 H164 Z" fill="#6b4a2f" class="out"/>
+    <path d="M197 30 V220" class="out" stroke="#4a3222"/>
+    <path d="M168 47 H204 L201 154 C188 148 182 160 170 153 Z" fill="url(#bn_cloth)" class="out"/>
+    <path d="M184 78 L194 111 L184 144 L174 111 Z" fill="#f2ede1" opacity="0.88"/>
+    <path d="M174 111 L184 96 L194 111 L184 126 Z" fill="#f2ede1" opacity="0.72"/>
+    <path d="M170 154 L179 146 L187 157 L194 147 L201 154 L197 182 L190 172 L184 190 L177 171 L171 181 Z" fill="#070707" class="out"/>
+    <path d="M197 25 L203 35 H191 Z" fill="url(#bn_blade)" class="out"/>
+    <path d="M193 221 H201 L197 235 Z" fill="#2a1d14" class="out"/>
+  </g>
+
+  <g id="weapon">
+    <path d="M48 126 L18 217" class="out" stroke="#34251b"/>
+    <path d="M11 222 L33 178 L49 190 Z" fill="url(#bn_blade)" class="out"/>
+    <path d="M31 190 L53 181" class="ink"/>
+  </g>
+
+  <g id="legs">
+    <path d="M93 165 L82 225 H105 L112 168 Z" fill="url(#bn_metal)" class="out"/>
+    <path d="M127 166 L135 225 H158 L146 164 Z" fill="url(#bn_metal)" class="out"/>
+    <path d="M75 227 H110 L104 238 H66 Z" fill="#111417" class="out"/>
+    <path d="M132 226 H168 L176 237 H136 Z" fill="#111417" class="out"/>
+    <path d="M91 190 H108 M134 190 H150" class="trim"/>
+  </g>
+
+  <g id="body">
+    <path d="M72 95 C78 73 96 61 119 62 C143 62 160 77 165 100 L154 168 C135 179 102 180 82 168 Z" fill="url(#bn_metal)" class="out"/>
+    <path d="M82 111 H156 M80 132 H158 M86 153 H151" class="ink"/>
+    <path d="M119 93 L132 126 L119 159 L105 126 Z" fill="#f5f0e6" opacity="0.92"/>
+    <path d="M105 126 L119 113 L132 126 L119 139 Z" fill="#f5f0e6" opacity="0.7"/>
+    <path d="M79 165 L111 178 L151 165 L146 200 L128 191 L112 201 Z" fill="url(#bn_cloth)" class="out"/>
+    <path d="M91 86 C96 73 141 73 150 87 L146 103 H95 Z" fill="#17191d" class="out"/>
+  </g>
+
+  <g id="left_arm">
+    <path d="M76 100 L55 128 L64 165 L82 154 L78 126 Z" fill="url(#bn_metal)" class="out"/>
+    <path d="M57 164 L75 160 L80 178 L61 181 Z" fill="#15171b" class="out"/>
+  </g>
+
+  <g id="right_arm">
+    <path d="M160 101 L181 126 L175 164 L157 154 L160 128 Z" fill="url(#bn_metal)" class="out"/>
+    <path d="M174 164 L190 169 L186 186 L166 179 Z" fill="#15171b" class="out"/>
+  </g>
+
+  <g id="helmet">
+    <path d="M91 66 C94 43 109 31 126 34 C144 37 154 51 152 73 L145 91 H97 Z" fill="url(#bn_metal)" class="out"/>
+    <path d="M96 68 H149 L145 82 H99 Z" fill="#060708" class="out"/>
+    <path d="M121 39 V84" class="trim"/>
+    <path d="M103 58 C111 51 132 50 143 58" class="ink"/>
+    <path d="M121 23 L128 36 H113 Z" fill="url(#bn_blade)" class="out"/>
+  </g>
+
+  <g id="detail">
+    <path d="M75 96 C84 83 95 78 109 79" class="trim"/>
+    <path d="M166 98 C154 84 143 79 130 80" class="trim"/>
+    <path d="M84 126 L63 153 M158 127 L177 153" class="trim"/>
+    <path d="M99 180 L89 210 M141 180 L153 210" class="ink"/>
+  </g>
+</svg>

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Black promoted pawn oni infantry">
+  <defs>
+    <style>
+      .out { stroke: #101010; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+      .ink { stroke: #141414; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+      .trim { stroke: #c09a5c; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    </style>
+    <radialGradient id="bp_aura" cx="50%" cy="55%" r="58%">
+      <stop offset="0" stop-color="#f8f8f8" stop-opacity="0.68"/>
+      <stop offset="0.5" stop-color="#cdd3d5" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#dfe7ea" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bp_metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#82888d"/>
+      <stop offset="0.44" stop-color="#252a2f"/>
+      <stop offset="1" stop-color="#020304"/>
+    </linearGradient>
+    <linearGradient id="bp_cloth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1b1c"/>
+      <stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <linearGradient id="bp_blade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#9ba2a8"/>
+      <stop offset="1" stop-color="#1a1e23"/>
+    </linearGradient>
+  </defs>
+
+  <g id="aura">
+    <path d="M52 220 C24 174 48 136 33 101 C63 127 47 66 84 40 C86 79 111 26 129 23 C126 70 162 34 171 42 C152 77 202 73 208 106 C178 115 222 155 202 220 Z" fill="url(#bp_aura)"/>
+    <path d="M47 203 C62 169 48 143 71 111 M184 204 C169 160 188 138 165 96" class="ink" opacity="0.22"/>
+  </g>
+
+  <g id="shadow">
+    <ellipse cx="126" cy="238" rx="78" ry="13" fill="#111" opacity="0.28"/>
+  </g>
+
+  <g id="banner">
+    <path d="M160 28 H213 L207 45 H165 Z" fill="#725233" class="out"/>
+    <path d="M205 24 V222" class="out" stroke="#4a3222"/>
+    <path d="M166 45 H211 L206 157 C190 147 182 165 168 154 Z" fill="url(#bp_cloth)" class="out"/>
+    <path d="M188 72 C198 96 200 119 189 146 C176 121 176 98 188 72 Z" fill="#f3eee4" opacity="0.9"/>
+    <path d="M172 107 C184 95 194 96 204 109 C191 118 182 118 172 107 Z" fill="#f3eee4" opacity="0.66"/>
+    <path d="M169 154 L178 145 L187 160 L197 145 L206 157 L201 189 L192 174 L184 198 L176 173 L169 187 Z" fill="#070707" class="out"/>
+    <path d="M205 18 L212 31 H198 Z" fill="url(#bp_blade)" class="out"/>
+  </g>
+
+  <g id="weapon">
+    <path d="M46 119 L12 220" class="out" stroke="#34251b"/>
+    <path d="M3 225 L27 169 L51 187 Z" fill="url(#bp_blade)" class="out"/>
+    <path d="M33 177 L55 163 L44 194" class="ink"/>
+  </g>
+
+  <g id="legs">
+    <path d="M91 163 L78 225 H105 L114 167 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M129 166 L137 225 H165 L149 162 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M69 226 H110 L105 239 H58 Z" fill="#0f1114" class="out"/>
+    <path d="M134 226 H178 L188 238 H139 Z" fill="#0f1114" class="out"/>
+  </g>
+
+  <g id="body">
+    <path d="M65 98 C72 70 95 54 122 55 C151 55 171 75 177 102 L160 169 C139 183 101 184 78 168 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M79 115 H165 M76 137 H168 M83 157 H158" class="ink"/>
+    <path d="M121 83 L139 125 L121 164 L102 125 Z" fill="#f6f1e6"/>
+    <path d="M83 168 L114 181 L151 168 L157 208 L134 194 L113 208 Z" fill="url(#bp_cloth)" class="out"/>
+    <path d="M73 94 C51 92 45 105 43 121 C60 117 71 113 83 101 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M169 95 C190 93 199 107 199 123 C181 117 170 113 159 101 Z" fill="url(#bp_metal)" class="out"/>
+  </g>
+
+  <g id="arms">
+    <path d="M72 106 L49 137 L61 177 L83 159 L80 130 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M172 106 L195 133 L188 174 L166 160 L170 130 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M55 178 L79 170 L85 190 L59 195 Z" fill="#12161b" class="out"/>
+    <path d="M186 174 L205 181 L199 199 L174 190 Z" fill="#12161b" class="out"/>
+  </g>
+
+  <g id="helmet">
+    <path d="M88 62 C91 38 108 25 126 27 C147 30 158 47 155 72 L148 94 H96 Z" fill="url(#bp_metal)" class="out"/>
+    <path d="M94 67 H151 L146 84 H99 Z" fill="#050607" class="out"/>
+    <path d="M96 49 C78 36 75 22 80 10 C93 23 101 33 108 48 Z" fill="url(#bp_blade)" class="out"/>
+    <path d="M151 49 C169 36 172 22 167 10 C154 23 146 33 139 48 Z" fill="url(#bp_blade)" class="out"/>
+    <path d="M122 32 V88" class="trim"/>
+    <path d="M105 58 C113 50 133 49 145 58" class="ink"/>
+  </g>
+
+  <g id="detail">
+    <path d="M72 101 C86 82 101 76 116 76 M174 102 C157 83 143 77 129 77" class="trim"/>
+    <path d="M87 131 L61 160 M159 131 L187 160" class="trim"/>
+    <path d="M102 181 L88 214 M145 181 L162 214" class="ink"/>
+  </g>
+</svg>

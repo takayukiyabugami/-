@@ -379,6 +379,7 @@ export function applyMove(targetState, move, options = {}) {
   }
 
   if (piece.type === "pawn" && (move.toRow === 0 || move.toRow === 7)) {
+    const promotedFrom = piece.type;
     if (simulate) {
       promotionType = "queen";
     } else if (typeof choosePromotion === "function") {
@@ -387,6 +388,8 @@ export function applyMove(targetState, move, options = {}) {
       promotionType = "queen";
     }
     piece.type = promotionType;
+    piece.promoted = true;
+    piece.promotedFrom = promotedFrom;
   }
 
   targetState.turn = defendingColor;
@@ -550,7 +553,7 @@ export function computeDeterministicHash(state) {
     turn: state.turn,
     enPassant: state.enPassant,
     board: state.board.map((row) => row.map((piece) =>
-      piece ? [piece.id, piece.color, piece.type, piece.hasMoved ? 1 : 0] : null
+      piece ? [piece.id, piece.color, piece.type, piece.hasMoved ? 1 : 0, piece.promotedFrom || ""] : null
     ))
   });
   let hash = 2166136261;
