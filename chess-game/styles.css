@@ -568,6 +568,140 @@ button:hover {
   filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.3));
 }
 
+.piece.white-pawn-rig,
+.piece-icon.white-pawn-rig {
+  display: block;
+  position: relative;
+  overflow: visible;
+  border-radius: 0;
+  object-fit: initial;
+  object-position: initial;
+}
+
+.piece.white-pawn-rig {
+  width: 98%;
+  height: 108%;
+}
+
+.piece-icon.white-pawn-rig {
+  width: 100%;
+  height: 112%;
+}
+
+.white-pawn-rig .rig-stage {
+  position: absolute;
+  left: 50%;
+  bottom: -1%;
+  width: 72%;
+  aspect-ratio: 440 / 620;
+  overflow: visible;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+}
+
+.white-pawn-rig .rig-node {
+  position: absolute;
+  inset: 0;
+  transform: rotate(var(--base-rotate));
+  transform-origin: var(--pivot-x) var(--pivot-y);
+  will-change: transform;
+}
+
+.white-pawn-rig .rig-part {
+  position: absolute;
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.white-pawn-rig .shadow .rig-part {
+  opacity: 0.7;
+  filter: blur(0.35px);
+}
+
+.white-pawn-rig .sword {
+  filter: drop-shadow(0 0 3px rgba(236, 246, 255, 0.55));
+}
+
+.move-ghost.rigged-pawn.walking::before,
+.move-ghost.rigged-pawn.walking::after {
+  content: none;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.body {
+  animation: rigWalkTorso 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.head {
+  animation: rigWalkHead 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.left-thigh {
+  animation: rigWalkLeftThigh 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.left-shin {
+  animation: rigWalkLeftShin 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.left-foot {
+  animation: rigWalkLeftFoot 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.right-thigh {
+  animation: rigWalkRightThigh 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.right-shin {
+  animation: rigWalkRightShin 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.right-foot {
+  animation: rigWalkRightFoot 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.left-upper-arm,
+.move-ghost.rigged-pawn.walking .rig-node.shield {
+  animation: rigWalkShieldSide 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.walking .rig-node.right-upper-arm,
+.move-ghost.rigged-pawn.walking .rig-node.sword {
+  animation: rigWalkSwordSide 0.64s linear infinite;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.body {
+  animation: rigPawnStabTorso 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.head {
+  animation: rigPawnStabHead 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.right-upper-arm {
+  animation: rigPawnStabUpperArm 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.right-forearm {
+  animation: rigPawnStabForearm 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.right-hand {
+  animation: rigPawnStabHand 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.sword {
+  animation: rigPawnStabSword 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
+.move-ghost.rigged-pawn.pawn-stab .rig-node.left-upper-arm,
+.move-ghost.rigged-pawn.pawn-stab .rig-node.left-forearm,
+.move-ghost.rigged-pawn.pawn-stab .rig-node.shield {
+  animation: rigPawnGuardShield 2.1s cubic-bezier(0.18, 0.82, 0.24, 1) forwards;
+}
+
 .coord {
   position: absolute;
   font-size: 0.7rem;
@@ -763,6 +897,267 @@ button:hover {
   }
   100% {
     transform: translate(-50%, -1.5%) rotate(12deg);
+  }
+}
+
+@keyframes rigWalkTorso {
+  0% {
+    transform: translateY(0.3%) rotate(calc(var(--base-rotate) - 0.8deg));
+  }
+  25% {
+    transform: translateY(-0.4%) rotate(calc(var(--base-rotate) + 0.4deg));
+  }
+  50% {
+    transform: translateY(0.3%) rotate(calc(var(--base-rotate) + 0.8deg));
+  }
+  75% {
+    transform: translateY(-0.4%) rotate(calc(var(--base-rotate) - 0.4deg));
+  }
+  100% {
+    transform: translateY(0.3%) rotate(calc(var(--base-rotate) - 0.8deg));
+  }
+}
+
+@keyframes rigWalkHead {
+  0% {
+    transform: rotate(calc(var(--base-rotate) + 0.8deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) - 0.8deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) + 0.8deg));
+  }
+}
+
+@keyframes rigWalkLeftThigh {
+  0% {
+    transform: rotate(calc(var(--base-rotate) - 18deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) + 18deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) - 18deg));
+  }
+}
+
+@keyframes rigWalkLeftShin {
+  0% {
+    transform: rotate(calc(var(--base-rotate) + 10deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) - 12deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) + 10deg));
+  }
+}
+
+@keyframes rigWalkLeftFoot {
+  0% {
+    transform: rotate(calc(var(--base-rotate) + 5deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) - 8deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) + 5deg));
+  }
+}
+
+@keyframes rigWalkRightThigh {
+  0% {
+    transform: rotate(calc(var(--base-rotate) + 18deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) - 18deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) + 18deg));
+  }
+}
+
+@keyframes rigWalkRightShin {
+  0% {
+    transform: rotate(calc(var(--base-rotate) - 12deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) + 10deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) - 12deg));
+  }
+}
+
+@keyframes rigWalkRightFoot {
+  0% {
+    transform: rotate(calc(var(--base-rotate) - 8deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) + 5deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) - 8deg));
+  }
+}
+
+@keyframes rigWalkShieldSide {
+  0% {
+    transform: rotate(calc(var(--base-rotate) + 2deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) - 2deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) + 2deg));
+  }
+}
+
+@keyframes rigWalkSwordSide {
+  0% {
+    transform: rotate(calc(var(--base-rotate) - 2deg));
+  }
+  50% {
+    transform: rotate(calc(var(--base-rotate) + 2deg));
+  }
+  100% {
+    transform: rotate(calc(var(--base-rotate) - 2deg));
+  }
+}
+
+@keyframes rigPawnStabTorso {
+  0% {
+    transform: translate(0, 0) rotate(var(--base-rotate));
+  }
+  36% {
+    transform: translate(-1.4%, -0.5%) rotate(calc(var(--base-rotate) - 4deg));
+  }
+  55% {
+    transform: translate(-2.6%, -1%) rotate(calc(var(--base-rotate) - 8deg));
+  }
+  66% {
+    transform: translate(6.5%, 0.3%) rotate(calc(var(--base-rotate) + 9deg));
+  }
+  78% {
+    transform: translate(3%, 0.1%) rotate(calc(var(--base-rotate) + 3deg));
+  }
+  100% {
+    transform: translate(0, 0) rotate(var(--base-rotate));
+  }
+}
+
+@keyframes rigPawnStabHead {
+  0% {
+    transform: rotate(var(--base-rotate));
+  }
+  52% {
+    transform: rotate(calc(var(--base-rotate) - 4deg));
+  }
+  66% {
+    transform: rotate(calc(var(--base-rotate) + 7deg));
+  }
+  100% {
+    transform: rotate(var(--base-rotate));
+  }
+}
+
+@keyframes rigPawnStabUpperArm {
+  0% {
+    transform: rotate(var(--base-rotate));
+  }
+  35% {
+    transform: rotate(calc(var(--base-rotate) + 44deg));
+  }
+  53% {
+    transform: rotate(calc(var(--base-rotate) + 62deg));
+  }
+  64% {
+    transform: translate(7%, -0.8%) rotate(calc(var(--base-rotate) - 74deg));
+  }
+  78% {
+    transform: translate(2.4%, 0) rotate(calc(var(--base-rotate) - 30deg));
+  }
+  100% {
+    transform: rotate(var(--base-rotate));
+  }
+}
+
+@keyframes rigPawnStabForearm {
+  0% {
+    transform: rotate(var(--base-rotate));
+  }
+  35% {
+    transform: rotate(calc(var(--base-rotate) + 36deg));
+  }
+  54% {
+    transform: rotate(calc(var(--base-rotate) + 76deg));
+  }
+  64% {
+    transform: translate(8%, -1.4%) rotate(calc(var(--base-rotate) - 66deg));
+  }
+  78% {
+    transform: translate(2%, 0) rotate(calc(var(--base-rotate) - 26deg));
+  }
+  100% {
+    transform: rotate(var(--base-rotate));
+  }
+}
+
+@keyframes rigPawnStabHand {
+  0% {
+    transform: rotate(var(--base-rotate));
+  }
+  52% {
+    transform: rotate(calc(var(--base-rotate) + 48deg));
+  }
+  64% {
+    transform: translate(8.5%, -1.8%) rotate(calc(var(--base-rotate) - 48deg));
+  }
+  78% {
+    transform: translate(2.4%, 0) rotate(calc(var(--base-rotate) - 14deg));
+  }
+  100% {
+    transform: rotate(var(--base-rotate));
+  }
+}
+
+@keyframes rigPawnStabSword {
+  0% {
+    transform: rotate(var(--base-rotate));
+  }
+  34% {
+    transform: translate(-1.5%, -4%) rotate(calc(var(--base-rotate) - 70deg));
+  }
+  53% {
+    transform: translate(-2.5%, -6%) rotate(calc(var(--base-rotate) - 98deg));
+  }
+  64% {
+    transform: translate(10%, -1.6%) rotate(calc(var(--base-rotate) + 48deg));
+  }
+  70% {
+    transform: translate(13%, -0.4%) rotate(calc(var(--base-rotate) + 42deg));
+  }
+  84% {
+    transform: translate(3%, 0) rotate(calc(var(--base-rotate) + 6deg));
+  }
+  100% {
+    transform: rotate(var(--base-rotate));
+  }
+}
+
+@keyframes rigPawnGuardShield {
+  0% {
+    transform: rotate(var(--base-rotate));
+  }
+  42% {
+    transform: translate(-1.2%, 0) rotate(calc(var(--base-rotate) - 7deg));
+  }
+  66% {
+    transform: translate(2%, 0.4%) rotate(calc(var(--base-rotate) + 9deg));
+  }
+  100% {
+    transform: rotate(var(--base-rotate));
   }
 }
 
@@ -1029,6 +1424,7 @@ button:hover {
   .move-ghost.running::after,
   .move-ghost.piece-pawn.walking::before,
   .move-ghost.piece-pawn.walking::after,
+  .move-ghost.rigged-pawn .rig-node,
   .square.move-landing,
   .square.slash-impact,
   .square.collapse-impact,

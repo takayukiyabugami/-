@@ -31,8 +31,172 @@ const PIECE_ASSETS = {
 };
 
 const NATIVE_COLOR_TYPES = new Set(["pawn", "knight"]);
-const BUILD_VERSION = "v2026.04.26-pawn-concept.1";
+const BUILD_VERSION = "v2026.05.01-white-pawn-rig.1";
 const MOTION_TARGET_FPS = 100;
+const WHITE_PAWN_RIG_ROOT = "./assets/white_pawn_rig/";
+const WHITE_PAWN_RIG_STAGE = {
+  width: 440,
+  height: 620,
+  rootX: 220,
+  rootY: 160
+};
+const WHITE_PAWN_RIG_PARTS = {
+  body: {
+    file: "body.png",
+    size: [260, 380],
+    pivot: [130, 68],
+    parent: null,
+    attach: [0, 0],
+    rotation: 0
+  },
+  head: {
+    file: "head.png",
+    size: [160, 170],
+    pivot: [80, 146],
+    parent: "body",
+    attach: [130, 54],
+    rotation: 0
+  },
+  left_upper_arm: {
+    file: "left_upper_arm.png",
+    size: [110, 150],
+    pivot: [55, 38],
+    parent: "body",
+    attach: [55, 88],
+    rotation: -12
+  },
+  left_forearm: {
+    file: "left_forearm.png",
+    size: [96, 150],
+    pivot: [48, 22],
+    parent: "left_upper_arm",
+    attach: [52, 120],
+    rotation: -9
+  },
+  left_hand: {
+    file: "left_hand.png",
+    size: [74, 78],
+    pivot: [37, 17],
+    parent: "left_forearm",
+    attach: [50, 128],
+    rotation: -4
+  },
+  right_upper_arm: {
+    file: "right_upper_arm.png",
+    size: [110, 150],
+    pivot: [55, 38],
+    parent: "body",
+    attach: [205, 88],
+    rotation: 12
+  },
+  right_forearm: {
+    file: "right_forearm.png",
+    size: [96, 150],
+    pivot: [48, 22],
+    parent: "right_upper_arm",
+    attach: [58, 120],
+    rotation: 9
+  },
+  right_hand: {
+    file: "right_hand.png",
+    size: [74, 78],
+    pivot: [37, 17],
+    parent: "right_forearm",
+    attach: [46, 128],
+    rotation: 4
+  },
+  sword: {
+    file: "sword.png",
+    size: [92, 340],
+    pivot: [46, 246],
+    parent: "right_hand",
+    attach: [40, 50],
+    rotation: -32
+  },
+  shield: {
+    file: "shield.png",
+    size: [188, 270],
+    pivot: [94, 136],
+    parent: "left_forearm",
+    attach: [44, 88],
+    rotation: 6
+  },
+  left_thigh: {
+    file: "left_thigh.png",
+    size: [98, 145],
+    pivot: [49, 22],
+    parent: "body",
+    attach: [92, 232],
+    rotation: 7
+  },
+  left_shin: {
+    file: "left_shin.png",
+    size: [92, 160],
+    pivot: [46, 20],
+    parent: "left_thigh",
+    attach: [49, 128],
+    rotation: -3
+  },
+  left_foot: {
+    file: "left_foot.png",
+    size: [106, 68],
+    pivot: [50, 18],
+    parent: "left_shin",
+    attach: [45, 148],
+    rotation: -3
+  },
+  right_thigh: {
+    file: "right_thigh.png",
+    size: [98, 145],
+    pivot: [49, 22],
+    parent: "body",
+    attach: [168, 232],
+    rotation: -7
+  },
+  right_shin: {
+    file: "right_shin.png",
+    size: [92, 160],
+    pivot: [46, 20],
+    parent: "right_thigh",
+    attach: [49, 128],
+    rotation: 3
+  },
+  right_foot: {
+    file: "right_foot.png",
+    size: [106, 68],
+    pivot: [56, 18],
+    parent: "right_shin",
+    attach: [47, 148],
+    rotation: 3
+  },
+  shadow: {
+    file: "shadow.png",
+    size: [340, 90],
+    pivot: [170, 44],
+    parent: null,
+    attach: [130, 360],
+    rotation: 0
+  }
+};
+const WHITE_PAWN_RIG_DRAW_ORDER = [
+  "shadow",
+  "right_thigh",
+  "right_shin",
+  "right_foot",
+  "body",
+  "head",
+  "left_thigh",
+  "left_shin",
+  "left_foot",
+  "left_upper_arm",
+  "left_forearm",
+  "left_hand",
+  "shield",
+  "right_upper_arm",
+  "right_forearm",
+  "right_hand",
+  "sword"
+];
 
 const boardElement = document.getElementById("board");
 const statusElement = document.getElementById("status");
@@ -212,6 +376,10 @@ function renderBoard() {
 }
 
 function createPieceImage(piece, className = "piece") {
+  if (shouldUseWhitePawnRig(piece)) {
+    return createWhitePawnRig(piece, className);
+  }
+
   const assetSource = getPieceAsset(piece);
   const image = document.createElement("img");
   image.className = `${className} piece-${piece.type} ${piece.color === "w" ? "team-white" : "team-black"}`;
@@ -225,6 +393,87 @@ function createPieceImage(piece, className = "piece") {
     image.classList.add("promoted-pawn");
   }
   return image;
+}
+
+function shouldUseWhitePawnRig(piece) {
+  return piece && piece.type === "pawn" && piece.color === "w" && piece.promotedFrom !== "pawn";
+}
+
+function createWhitePawnRig(piece, className = "piece") {
+  const rig = document.createElement("div");
+  rig.className = `${className} piece-pawn team-white native-color white-pawn-rig`;
+  rig.setAttribute("role", "img");
+  rig.setAttribute("aria-label", `${piece.color === "w" ? "White" : "Black"} pawn`);
+
+  const stage = document.createElement("span");
+  stage.className = "rig-stage";
+
+  const pivotCache = new Map();
+  for (const partName of WHITE_PAWN_RIG_DRAW_ORDER) {
+    const part = WHITE_PAWN_RIG_PARTS[partName];
+    const pivot = getWhitePawnRigGlobalPivot(partName, pivotCache);
+    const imageLeft = pivot.x - part.pivot[0];
+    const imageTop = pivot.y - part.pivot[1];
+    const node = document.createElement("span");
+    node.className = `rig-node ${toRigClassName(partName)}`;
+    node.style.setProperty("--base-rotate", `${part.rotation}deg`);
+    node.style.setProperty("--pivot-x", `${toStagePercent(pivot.x, "x")}%`);
+    node.style.setProperty("--pivot-y", `${toStagePercent(pivot.y, "y")}%`);
+    node.style.zIndex = String(WHITE_PAWN_RIG_DRAW_ORDER.indexOf(partName) + 1);
+
+    const image = document.createElement("img");
+    image.className = "rig-part";
+    image.alt = "";
+    image.src = `${WHITE_PAWN_RIG_ROOT}${part.file}`;
+    image.draggable = false;
+    image.style.left = `${toStagePercent(imageLeft, "x")}%`;
+    image.style.top = `${toStagePercent(imageTop, "y")}%`;
+    image.style.width = `${toStagePercent(part.size[0], "x")}%`;
+    image.style.height = `${toStagePercent(part.size[1], "y")}%`;
+
+    node.appendChild(image);
+    stage.appendChild(node);
+  }
+
+  rig.appendChild(stage);
+  return rig;
+}
+
+function getWhitePawnRigGlobalPivot(partName, pivotCache) {
+  if (pivotCache.has(partName)) {
+    return pivotCache.get(partName);
+  }
+
+  const part = WHITE_PAWN_RIG_PARTS[partName];
+  const body = WHITE_PAWN_RIG_PARTS.body;
+  let pivot;
+  if (partName === "body") {
+    pivot = { x: WHITE_PAWN_RIG_STAGE.rootX, y: WHITE_PAWN_RIG_STAGE.rootY };
+  } else if (!part.parent) {
+    pivot = {
+      x: WHITE_PAWN_RIG_STAGE.rootX + part.attach[0] - body.pivot[0],
+      y: WHITE_PAWN_RIG_STAGE.rootY + part.attach[1] - body.pivot[1]
+    };
+  } else {
+    const parent = WHITE_PAWN_RIG_PARTS[part.parent];
+    const parentPivot = getWhitePawnRigGlobalPivot(part.parent, pivotCache);
+    pivot = {
+      x: parentPivot.x + part.attach[0] - parent.pivot[0],
+      y: parentPivot.y + part.attach[1] - parent.pivot[1]
+    };
+  }
+
+  pivotCache.set(partName, pivot);
+  return pivot;
+}
+
+function toStagePercent(value, axis) {
+  const size = axis === "x" ? WHITE_PAWN_RIG_STAGE.width : WHITE_PAWN_RIG_STAGE.height;
+  return value / size * 100;
+}
+
+function toRigClassName(partName) {
+  return partName.replaceAll("_", "-");
 }
 
 function getPieceAsset(piece) {
@@ -349,6 +598,9 @@ function playSimpleMoveAnimation(move) {
   const effectTimers = [];
   const ghost = document.createElement("div");
   ghost.className = `move-ghost piece-${movingPiece.type} ${profile.classNames.join(" ")}`;
+  if (shouldUseWhitePawnRig(movingPiece)) {
+    ghost.classList.add("rigged-pawn");
+  }
   ghost.style.left = `${startX}px`;
   ghost.style.top = `${startY}px`;
   ghost.style.width = `${sourceRect.width}px`;
