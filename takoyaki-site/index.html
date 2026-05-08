@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="蛸火堂は、外を香ばしく、中をとろりと焼き上げるたこ焼き専門店。受取予約、メニュー、店舗情報を掲載。"
+    >
+    <title>蛸火堂 | 最高のたこ焼き専門店</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="蛸火堂 トップへ">
+        <span class="brand-mark" aria-hidden="true">蛸</span>
+        <span>蛸火堂</span>
+      </a>
+      <nav class="site-nav" aria-label="主要ナビゲーション">
+        <a href="#menu">メニュー</a>
+        <a href="#craft">こだわり</a>
+        <a href="#reserve">受取予約</a>
+        <a href="#shop">店舗</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true"></div>
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow">焼きたて専門 / 18個まで一気に予約可</p>
+          <h1 id="hero-title">蛸火堂</h1>
+          <p class="hero-copy">
+            外は薄く香ばしい。中は出汁でほどける。大阪式を土台に、
+            銅板の火入れと国産真蛸で仕上げるたこ焼きだ。
+          </p>
+          <div class="hero-actions" aria-label="主要操作">
+            <a class="button button-primary" href="#reserve">受取予約</a>
+            <a class="button button-quiet" href="#menu">品書きを見る</a>
+          </div>
+          <dl class="hero-facts" aria-label="営業要約">
+            <div>
+              <dt>本日</dt>
+              <dd>11:30 - 21:00</dd>
+            </div>
+            <div>
+              <dt>焼き上げ</dt>
+              <dd>約8分</dd>
+            </div>
+            <div>
+              <dt>最寄り</dt>
+              <dd>美浜駅 3分</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="section-heading">
+          <p class="eyebrow">Menu</p>
+          <h2 id="menu-title">看板は、迷わせない。</h2>
+          <p>
+            生地、蛸、焼き時間を固定し、味だけを選ぶ。軸を増やすと焼きが鈍る。
+          </p>
+        </div>
+
+        <div class="menu-layout">
+          <div class="menu-tabs" role="tablist" aria-label="たこ焼きメニュー">
+            <button class="menu-tab active" type="button" role="tab" aria-selected="true" data-menu="classic">
+              極みソース
+            </button>
+            <button class="menu-tab" type="button" role="tab" aria-selected="false" data-menu="salt">
+              焦がし塩
+            </button>
+            <button class="menu-tab" type="button" role="tab" aria-selected="false" data-menu="dashi">
+              出汁浸し
+            </button>
+          </div>
+
+          <article class="menu-feature" aria-live="polite">
+            <div>
+              <p class="tagline" data-menu-tag>初手はこれでいい</p>
+              <h3 data-menu-name>極みソース</h3>
+              <p data-menu-desc>
+                旨味の濃い自家製ソース、薄削り節、青のり。甘さを抑え、
+                生地の出汁を殺さない配合にしている。
+              </p>
+            </div>
+            <dl class="menu-meta">
+              <div>
+                <dt>6個</dt>
+                <dd data-menu-small>580円</dd>
+              </div>
+              <div>
+                <dt>10個</dt>
+                <dd data-menu-large>900円</dd>
+              </div>
+              <div>
+                <dt>相性</dt>
+                <dd data-menu-pair>黒烏龍茶</dd>
+              </div>
+            </dl>
+          </article>
+
+          <div class="side-note">
+            <h3>今日の仕込み</h3>
+            <ul>
+              <li>国産真蛸を大ぶりに切る</li>
+              <li>昆布と鰹の一番出汁を使用</li>
+              <li>焼き置きは最大12分まで</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="craft-section" id="craft" aria-labelledby="craft-title">
+        <div class="craft-copy">
+          <p class="eyebrow">Craft</p>
+          <h2 id="craft-title">最高を名乗るなら、手順を絞る。</h2>
+          <p>
+            余計な飾りは足さない。銅板を温め、出汁を寝かせ、蛸の水分を読む。
+            焼き手の気分で味が揺れる店は、看板を背負えない。
+          </p>
+        </div>
+        <div class="craft-grid" aria-label="こだわり">
+          <article>
+            <span class="step">01</span>
+            <h3>銅板の火入れ</h3>
+            <p>表面だけを早く固め、中の出汁を閉じ込める。焦げではなく香ばしさを狙う。</p>
+          </article>
+          <article>
+            <span class="step">02</span>
+            <h3>出汁生地</h3>
+            <p>昆布、鰹、薄口醤油。ソースに頼らず、素の一口で成立させる。</p>
+          </article>
+          <article>
+            <span class="step">03</span>
+            <h3>受取時間管理</h3>
+            <p>予約は焼き上がりから逆算する。熱を失った玉は、戦力外だ。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="reserve-section" id="reserve" aria-labelledby="reserve-title">
+        <div class="section-heading">
+          <p class="eyebrow">Pickup</p>
+          <h2 id="reserve-title">受取予約</h2>
+          <p>個数と時間を入れれば概算を返す。送信処理は未接続だが、店頭運用の型は通る。</p>
+        </div>
+
+        <form class="reserve-form" data-order-form>
+          <label>
+            味
+            <select name="flavor" data-flavor>
+              <option value="classic">極みソース</option>
+              <option value="salt">焦がし塩</option>
+              <option value="dashi">出汁浸し</option>
+            </select>
+          </label>
+
+          <label>
+            数量
+            <select name="quantity" data-quantity>
+              <option value="6">6個</option>
+              <option value="10">10個</option>
+              <option value="18">18個</option>
+            </select>
+          </label>
+
+          <label>
+            受取時刻
+            <input name="pickup" type="time" value="18:30" min="11:30" max="21:00" data-pickup>
+          </label>
+
+          <button class="button button-primary" type="submit">概算を出す</button>
+        </form>
+
+        <output class="order-result" data-order-result>
+          極みソース 6個、580円。18:30 受取なら、18:22 から焼き始める。
+        </output>
+      </section>
+
+      <section class="shop-section" id="shop" aria-labelledby="shop-title">
+        <div>
+          <p class="eyebrow">Shop</p>
+          <h2 id="shop-title">店舗情報</h2>
+          <p>
+            予約なしでも買える。ただし夕方は列が伸びる。待つのが趣味でないなら、
+            受取時間を決めておけ。
+          </p>
+        </div>
+        <div class="shop-panel">
+          <dl>
+            <div>
+              <dt>住所</dt>
+              <dd>神奈川県美浜市駅前 2-9-29</dd>
+            </div>
+            <div>
+              <dt>営業時間</dt>
+              <dd>11:30 - 21:00 / 火曜休</dd>
+            </div>
+            <div>
+              <dt>支払い</dt>
+              <dd>現金、主要QR、交通系IC</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>蛸火堂</span>
+      <span>焼き上がりを守る。そこから先は客の仕事だ。</span>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
