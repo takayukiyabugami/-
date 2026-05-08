@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Designer"
+  short_description: "Design game rules, systems, balance, UX, and playtests"
+  default_prompt: "Use $game-designer to design and evaluate digital game systems, player feel, balance, and prototype tests."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Artist"
+  short_description: "Create game art briefs with technical art safety checks"
+  default_prompt: "Use $game-artist to create production-ready game art briefs with Unity/Unreal technical art checks."
