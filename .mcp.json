@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "dlab": {
+      "type": "http",
+      "url": "https://mcp.daigovideolab.jp/mcp"
+    }
+  }
+}
